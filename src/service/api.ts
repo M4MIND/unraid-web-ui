@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 const client = axios.create({
-  baseURL: process.env.REACT_APP_REST_API ?? "",
+  baseURL: import.meta.env.VITE_APP_REST_API ?? "",
 });
 
 type HTTPRequestConfig = AxiosRequestConfig;

@@ -22,6 +22,7 @@ function CpuState() {
             .sort((a, b) => {
               const _a = Number(a.replace("cpu", ""));
               const _b = Number(b.replace("cpu", ""));
+              
               if (_a > _b) {
                 return 1;
               }
