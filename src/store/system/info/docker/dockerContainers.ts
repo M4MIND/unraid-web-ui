@@ -1,10 +1,6 @@
 import { create } from "zustand";
 import axiosClient from "../../../../utils/Axios";
 
-export interface Root {
-  containers: Container[];
-}
-
 export interface Container {
   Id: string;
   Names: string[];
@@ -170,7 +166,7 @@ export interface Mount {
 }
 
 interface DockerContainersStore {
-  data: Root | null;
+  data: Container[] | null;
   fetch: () => void;
 }
 

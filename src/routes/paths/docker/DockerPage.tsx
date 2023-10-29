@@ -1,6 +1,6 @@
 import DashboardLayout from "../../../components/layout/DashboardLayout";
 import useDockerContainersStore from "../../../store/system/info/docker/dockerContainers";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Badge, Card, Table } from "antd";
 
 export default function DockerPage() {
@@ -20,6 +20,7 @@ export default function DockerPage() {
     <DashboardLayout>
       <Card>
         <Table
+          loading={docker == null}
           bordered={true}
           size={"small"}
           pagination={false}
@@ -50,7 +51,7 @@ export default function DockerPage() {
               },
             },
           ]}
-          dataSource={docker?.containers}
+          dataSource={docker ?? []}
         ></Table>
       </Card>
     </DashboardLayout>

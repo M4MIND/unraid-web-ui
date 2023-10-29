@@ -3,7 +3,7 @@ import {
   Card,
   Col,
   Divider,
-  Grid,
+  message,
   Row,
   Space,
   Statistic,
@@ -22,13 +22,15 @@ import {
 } from "@ant-design/icons";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
-import { blue, gray } from "@ant-design/colors";
 import bytes from "bytes";
+import axiosClient from "../../utils/Axios";
 
 export default function Dashboard() {
+  const [messageApi, contextHolder] = message.useMessage();
   const containers = useDockerContainersStore((state) => state.data);
   const cpu = useCpuStore((state) => state.data);
   const memory = useMemoryStore((state) => state.data);
+
   useEffect(() => {
     useCpuStore.getState().fetch();
     useMemoryStore.getState().fetch();
@@ -46,6 +48,7 @@ export default function Dashboard() {
   }, []);
   return (
     <DashboardLayout>
+      {contextHolder}
       <Row gutter={[12, 12]}>
         <Col xs={8} sm={6} md={4}>
           <Card size={"small"}>
@@ -75,22 +78,16 @@ export default function Dashboard() {
             <Statistic
               prefix={<PlayCircleOutlined />}
               title="Running containers"
-              value={
-                containers?.containers.filter((v) => v.State === "running")
-                  .length
-              }
+              value={containers?.filter((v) => v.State === "running").length}
             ></Statistic>
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
           <Card size={"small"}>
             <Statistic
-              prefix={<ReloadOutlined spin />}
+              prefix={<ReloadOutlined />}
               title="Restarting containers"
-              value={
-                containers?.containers.filter((v) => v.State === "restarting")
-                  .length
-              }
+              value={containers?.filter((v) => v.State === "restarting").length}
             ></Statistic>
           </Card>
         </Col>
@@ -99,10 +96,7 @@ export default function Dashboard() {
             <Statistic
               prefix={<StopOutlined />}
               title="Stoped containers"
-              value={
-                containers?.containers.filter((v) => v.State === "stopped")
-                  .length
-              }
+              value={containers?.filter((v) => v.State === "exited").length}
             ></Statistic>
           </Card>
         </Col>
@@ -124,24 +118,61 @@ export default function Dashboard() {
             {containers ? (
               <Table
                 size={"small"}
-                dataSource={containers.containers}
+                dataSource={containers ?? []}
                 columns={[
                   { title: "Name", dataIndex: "Names", key: "Names" },
                   { title: "Status", dataIndex: "Status", key: "Status" },
                   { title: "State", dataIndex: "State", key: "State" },
                   {
                     title: "Actions",
-                    render: () => (
+                    render: (value) => (
                       <Space wrap>
-                        <Button type={"primary"} size={"small"}>
-                          Start
-                        </Button>
-                        <Button type={"primary"} size={"small"}>
-                          Restart
-                        </Button>
-                        <Button type={"primary"} size={"small"}>
-                          Stop
-                        </Button>
+                        {value.State === "exited" ? (
+                          <Button
+                            type={"primary"}
+                            size={"small"}
+                            onClick={() => {
+                              axiosClient
+                                .get(
+                                  `/docker/container/command/${value.Id}/start`,
+                                )
+                                .then(() => {
+                                  messageApi.info("Container start");
+                                });
+                            }}
+                          >
+                            Start
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+
+                        {value.State === "running" ? (
+                          <Button type={"primary"} size={"small"}>
+                            Restart
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                        {value.State === "running" ? (
+                          <Button
+                            type={"primary"}
+                            size={"small"}
+                            onClick={() => {
+                              axiosClient
+                                .get(
+                                  `/docker/container/command/${value.Id}/stop`,
+                                )
+                                .then(() => {
+                                  messageApi.info("Container stopped");
+                                });
+                            }}
+                          >
+                            Stop
+                          </Button>
+                        ) : (
+                          ""
+                        )}
                       </Space>
                     ),
                   },
