@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { ConfigProvider, Layout, Menu, theme } from "antd";
+import { RouterProvider, Link, NavLink } from "react-router-dom";
+import MenuItem from "antd/es/menu/MenuItem";
+import { Content } from "antd/es/layout/layout";
+import routes from "./routes/router";
+import {
+  AppstoreFilled,
+  DashboardFilled,
+  DatabaseFilled,
+  FolderFilled,
+  HddFilled,
+  ProfileFilled,
+  SettingFilled,
+} from "@ant-design/icons";
+
+const { Header } = Layout;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ConfigProvider
+      theme={{
+        algorithm: [theme.darkAlgorithm],
+        token: {
+          borderRadius: 4,
+        },
+      }}
+    >
+      <RouterProvider router={routes}></RouterProvider>
+    </ConfigProvider>
   );
 }
 
