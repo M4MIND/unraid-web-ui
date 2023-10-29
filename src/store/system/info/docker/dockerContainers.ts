@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axiosClient from "../../../../utils/Axios";
+import { Api } from "../../../../service/api";
 
 export interface Container {
   Id: string;
@@ -25,46 +25,7 @@ export interface Port {
 }
 
 export interface Labels {
-  "com.docker.compose.config-hash"?: string;
-  "com.docker.compose.container-number"?: string;
-  "com.docker.compose.depends_on"?: string;
-  "com.docker.compose.image"?: string;
-  "com.docker.compose.oneoff"?: string;
-  "com.docker.compose.project"?: string;
-  "com.docker.compose.project.config_files"?: string;
-  "com.docker.compose.project.working_dir"?: string;
-  "com.docker.compose.replace"?: string;
-  "com.docker.compose.service"?: string;
-  "com.docker.compose.version"?: string;
-  maintainer?: string;
-  "org.opencontainers.image.created"?: string;
-  "org.opencontainers.image.revision"?: string;
-  "org.opencontainers.image.source"?: string;
-  "org.opencontainers.image.title"?: string;
-  "org.opencontainers.image.url"?: string;
-  "org.opencontainers.image.vendor"?: string;
-  "org.opencontainers.image.version"?: string;
-  build_version?: string;
-  "org.opencontainers.image.authors"?: string;
-  "org.opencontainers.image.description"?: string;
-  "org.opencontainers.image.documentation"?: string;
-  "org.opencontainers.image.licenses"?: string;
-  "org.opencontainers.image.ref.name"?: string;
-  "net.unraid.docker.icon"?: string;
-  "net.unraid.docker.managed"?: string;
-  "net.unraid.docker.webui"?: string;
-  "org.label-schema.description"?: string;
-  "org.label-schema.name"?: string;
-  "org.label-schema.schema-version"?: string;
-  "org.label-schema.vcs-url"?: string;
-  "org.label-schema.version"?: string;
-  "com.docker.desktop.extension.api.version"?: string;
-  "com.docker.desktop.extension.icon"?: string;
-  "com.docker.extension.additional-urls"?: string;
-  "com.docker.extension.detailed-description"?: string;
-  "com.docker.extension.publisher-url"?: string;
-  "com.docker.extension.screenshots"?: string;
-  "io.portainer.server"?: string;
+  [index: string]: string;
 }
 
 export interface HostConfig {
@@ -166,14 +127,16 @@ export interface Mount {
 }
 
 interface DockerContainersStore {
-  data: Container[] | null;
+  data: Container[];
   fetch: () => void;
 }
 
 const useDockerContainersStore = create<DockerContainersStore>((set) => ({
-  data: null,
+  data: [],
   fetch: async () => {
-    const response = await axiosClient.get("/system/info/docker/containers");
+    const response = await Api.get<Container[]>(
+      "/system/info/docker/containers",
+    );
 
     set({ data: response.data });
   },

@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
-import Dashboard from "./paths/Dashboard";
+import DashboardPage from "./DashboardPage";
 import React from "react";
-import DockerPage from "./paths/docker/DockerPage";
-import { StatsPage } from "./paths/stats/StatsPage";
+import DockerPage from "./docker/DockerPage";
+import { StatsPage } from "./stats/StatsPage";
 
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <DashboardPage />,
   },
   {
     path: "/docker",

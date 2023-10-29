@@ -1,8 +1,9 @@
-import DashboardLayout from "../../../components/layout/DashboardLayout";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import React, { useEffect } from "react";
 import { Card, Col, Row } from "antd";
 import { Area, Line } from "@ant-design/plots";
-import useCpuStatsHistory from "../../../store/system/info/cpu/CpuStatsHistory";
+import useCpuStatsHistory from "../../store/system/info/cpu/CpuStatsHistory";
+import { blue, green, red } from "@ant-design/colors";
 
 export function StatsPage() {
   const cpuStatsHistory = useCpuStatsHistory((state) => state.data);
@@ -20,11 +21,12 @@ export function StatsPage() {
     <DashboardLayout>
       <Row>
         <Col xs={24} sm={24} md={12}>
-          <Card size={"small"} title={"Cpu State"}>
+          <Card size={"small"} title={"CPU"}>
             <Area
               animation={false}
               yField={"value"}
               xField={"date"}
+              isStack={false}
               xAxis={{
                 label: {
                   formatter: (v) => {
@@ -33,7 +35,6 @@ export function StatsPage() {
                   },
                 },
               }}
-              renderer={"canvas"}
               yAxis={{ max: 100, min: 0 }}
               seriesField={"group"}
               data={
@@ -41,12 +42,28 @@ export function StatsPage() {
                   ?.filter((v) => v !== null)
                   .map((v, k) => {
                     const date = Date.now();
-                    return {
-                      value: Number((100 - v["cpu"].idle).toFixed(2)),
-                      date: date - (cpuStatsHistory?.length * 1000 - k * 1000),
-                      group: "cpu used",
-                    };
-                  }) ?? []
+                    return [
+                      {
+                        value: Number((100 - v["cpu"].idle).toFixed(2)),
+                        date:
+                          date - (cpuStatsHistory?.length * 1000 - k * 1000),
+                        group: "used",
+                      },
+                      {
+                        value: Number(v["cpu"].system.toFixed(2)),
+                        date:
+                          date - (cpuStatsHistory?.length * 1000 - k * 1000),
+                        group: "system",
+                      },
+                      {
+                        value: Number(v["cpu"].user.toFixed(2)),
+                        date:
+                          date - (cpuStatsHistory?.length * 1000 - k * 1000),
+                        group: "user",
+                      },
+                    ];
+                  })
+                  .flat() ?? []
               }
             ></Area>
           </Card>

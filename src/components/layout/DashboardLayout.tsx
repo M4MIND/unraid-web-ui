@@ -48,7 +48,7 @@ export default function DashboardLayout(props: React.PropsWithChildren) {
       </Header>
       <Content
         style={{
-          padding: "0 24px",
+          padding: "0 12px",
           margin: "0 auto",
           maxWidth: 1600,
           width: "100%",

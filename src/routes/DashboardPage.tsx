@@ -9,23 +9,20 @@ import {
   Statistic,
   Table,
 } from "antd";
-import CpuState from "../../components/CpuState";
-import MemoryState from "../../components/MemoryState";
+import CpuState from "../components/CpuState";
+import MemoryState from "../components/MemoryState";
 import React, { useEffect } from "react";
-import useMemoryStore from "../../store/system/info/memory/MemoryStore";
-import useCpuStore from "../../store/system/info/cpu/CpuStore";
-import useDockerContainersStore from "../../store/system/info/docker/dockerContainers";
-import {
-  PlayCircleOutlined,
-  ReloadOutlined,
-  StopOutlined,
-} from "@ant-design/icons";
-import DashboardLayout from "../../components/layout/DashboardLayout";
+import useMemoryStore from "../store/system/info/memory/MemoryStore";
+import useCpuStore from "../store/system/info/cpu/CpuStore";
+import useDockerContainersStore from "../store/system/info/docker/dockerContainers";
+import { PlayCircleOutlined, StopOutlined } from "@ant-design/icons";
+import CachedIcon from "@mui/icons-material/Cached";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
 import bytes from "bytes";
-import axiosClient from "../../utils/Axios";
+import { Api } from "../service/api";
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const [messageApi, contextHolder] = message.useMessage();
   const containers = useDockerContainersStore((state) => state.data);
   const cpu = useCpuStore((state) => state.data);
@@ -85,7 +82,7 @@ export default function Dashboard() {
         <Col xs={8} sm={6} md={4}>
           <Card size={"small"}>
             <Statistic
-              prefix={<ReloadOutlined />}
+              prefix={<CachedIcon />}
               title="Restarting containers"
               value={containers?.filter((v) => v.State === "restarting").length}
             ></Statistic>
@@ -132,13 +129,11 @@ export default function Dashboard() {
                             type={"primary"}
                             size={"small"}
                             onClick={() => {
-                              axiosClient
-                                .get(
-                                  `/docker/container/command/${value.Id}/start`,
-                                )
-                                .then(() => {
-                                  messageApi.info("Container start");
-                                });
+                              Api.get(
+                                `/docker/container/command/${value.Id}/start`,
+                              ).then(() => {
+                                messageApi.info("Container start");
+                              });
                             }}
                           >
                             Start
@@ -154,18 +149,17 @@ export default function Dashboard() {
                         ) : (
                           ""
                         )}
-                        {value.State === "running" ? (
+                        {value.State === "running" ||
+                        value.State === "restarting" ? (
                           <Button
                             type={"primary"}
                             size={"small"}
                             onClick={() => {
-                              axiosClient
-                                .get(
-                                  `/docker/container/command/${value.Id}/stop`,
-                                )
-                                .then(() => {
-                                  messageApi.info("Container stopped");
-                                });
+                              Api.get(
+                                `/docker/container/command/${value.Id}/stop`,
+                              ).then(() => {
+                                messageApi.info("Container stopped");
+                              });
                             }}
                           >
                             Stop

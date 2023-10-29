@@ -1,16 +1,20 @@
-import axiosClient from "../../../../utils/Axios";
 import { create } from "zustand";
 import { CpuData, CpuUtilization } from "./CpuStore";
+import { Api } from "../../../../service/api";
+
+interface Data {
+  [index: string]: CpuUtilization;
+}
 
 interface State {
-  data: { [index: string]: CpuUtilization }[] | null;
+  data: Data[];
   fetch: () => void;
 }
 
 const useCpuStatsHistory = create<State>((set) => ({
-  data: null,
+  data: [],
   fetch: async () => {
-    const response = await axiosClient.get("/system/info/cpu/stat");
+    const response = await Api.get<Data[]>("/system/info/cpu/stat");
 
     set({ data: response.data });
   },

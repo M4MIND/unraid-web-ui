@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import axiosClient from "../../../../utils/Axios";
+import { Api } from "../../../../service/api";
 
 export interface CpuUtilization {
   guest: number;
@@ -28,7 +28,7 @@ interface CpuStore {
 const useCpuStore = create<CpuStore>()((set) => ({
   data: null,
   fetch: async () => {
-    const response = await axiosClient.get("/system/info/cpu");
+    const response = await Api.get<CpuData>("/system/info/cpu");
     set({ data: response.data });
   },
 }));

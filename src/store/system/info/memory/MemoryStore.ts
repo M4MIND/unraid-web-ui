@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axiosClient from "../../../../utils/Axios";
+import { Api } from "../../../../service/api";
 
 export interface Root {
   active: number;
@@ -29,7 +29,7 @@ interface IUseMemoryStore {
 const useMemoryStore = create<IUseMemoryStore>((set) => ({
   data: null,
   fetch: async () => {
-    const response = await axiosClient.get("/system/info/memory");
+    const response = await Api.get<Root>("/system/info/memory");
     set({ data: response.data });
   },
 }));
