@@ -7,9 +7,9 @@ import svgr from "vite-plugin-svgr";
 export default defineConfig({
   plugins: [
     react(),
-    viteTsconfigPaths(),
-    svgr({
-      include: "**/*.svg?react",
-    }),
+    // viteTsconfigPaths(),
+    // svgr({
+    //   include: "**/*.svg?react",
+    // }),
   ],
 });
