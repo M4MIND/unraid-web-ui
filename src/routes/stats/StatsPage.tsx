@@ -5,14 +5,21 @@ import { Area } from "@ant-design/plots";
 import useCpuStatsHistory from "../../store/system/info/cpu/CpuStatsHistory";
 import useMemoryHistoryStore from "../../store/system/info/memory/MemoryHistoryStore";
 import useNetworkHistoryStore from "../../store/system/info/network/NetworkHistoryStore";
+import useDisksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
+import disksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
+import UtilDate from "../../utils/UtilDate";
 import bytes from "bytes";
 
 export function StatsPage() {
   const cpuStatsHistory = useCpuStatsHistory((state) => state.data);
   const memoryStatsHistory = useMemoryHistoryStore((state) => state.data);
+  const disksStatsHistory = useDisksHistoryStore((state) => state.data);
+  const disksList = useDisksHistoryStore((state) => state.disks);
   const networkHistory = useNetworkHistoryStore((state) => state.data);
   const networkInterfaces = useNetworkHistoryStore((state) => state.interfaces);
   const interfaceSelected = useNetworkHistoryStore((state) => state.selected);
+
+  const [selectedDisk, setSelectedDisk] = useState("");
   const changeInterface = useNetworkHistoryStore(
     (state) => state.changeSelected,
   );
@@ -21,11 +28,13 @@ export function StatsPage() {
     useCpuStatsHistory.getState().fetch();
     useMemoryHistoryStore.getState().fetch();
     useNetworkHistoryStore.getState().fetch();
+    disksHistoryStore.getState().fetch();
 
     const id = setInterval(() => {
       useCpuStatsHistory.getState().fetch();
       useMemoryHistoryStore.getState().fetch();
       useNetworkHistoryStore.getState().fetch();
+      disksHistoryStore.getState().fetch();
     }, 1000);
     return () => {
       clearInterval(id);
@@ -34,6 +43,76 @@ export function StatsPage() {
   return (
     <DashboardLayout>
       <Row gutter={[16, 16]}>
+        <Col xs={12} sm={24} md={12}>
+          <Card
+            size={"small"}
+            title={"Disks Read / Write"}
+            extra={
+              disksList.length !== 0 ? (
+                <Select
+                  style={{ minWidth: 90 }}
+                  defaultValue={disksList[0]}
+                  onChange={(v) => setSelectedDisk(v)}
+                  options={disksList.map((v) => {
+                    return {
+                      value: v,
+                      label: v,
+                    };
+                  })}
+                  size={"small"}
+                ></Select>
+              ) : (
+                ""
+              )
+            }
+          >
+            {disksStatsHistory.length > 0 ? (
+              <Area
+                yField={"value"}
+                xField={"date"}
+                xAxis={{
+                  label: {
+                    formatter: (v) => {
+                      return UtilDate.ConvertUtcToHMS(v);
+                    },
+                  },
+                }}
+                yAxis={{
+                  label: {
+                    formatter: (v) => {
+                      return bytes(Number(v));
+                    },
+                  },
+                }}
+                animation={false}
+                isStack={false}
+                seriesField={"group"}
+                data={disksStatsHistory
+                  .map((inf) => {
+                    return inf.Avg.filter((v) => v.name === selectedDisk)
+                      .map((v) => {
+                        return [
+                          {
+                            value: v.readbytes,
+                            group: `readbytes`,
+                            date: inf.Time,
+                          },
+                          {
+                            value: -v.writebytes,
+                            group: `writebytes`,
+                            date: inf.Time,
+                          },
+                        ];
+                      })
+                      .flat();
+                  })
+                  .flat()}
+              ></Area>
+            ) : (
+              "Loading"
+            )}
+          </Card>
+        </Col>
         <Col xs={24} sm={24} md={12}>
           <Card size={"small"} title={"CPU"}>
             <Area
@@ -44,8 +123,7 @@ export function StatsPage() {
               xAxis={{
                 label: {
                   formatter: (v) => {
-                    const date = new Date(parseInt(v));
-                    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                    return UtilDate.ConvertUtcToHMS(v);
                   },
                 },
               }}
@@ -54,24 +132,22 @@ export function StatsPage() {
               renderer={"canvas"}
               data={
                 cpuStatsHistory
-                  ?.filter((v) => v !== null)
+                  ?.filter((v) => v.Avg !== null)
                   .map((v, k) => {
-                    const date =
-                      Date.now() - (cpuStatsHistory?.length * 1000 - k * 1000);
                     return [
                       {
-                        value: Number((100 - v["cpu"].idle).toFixed(2)),
-                        date: date,
+                        value: Number((100 - v.Avg["cpu"].idle).toFixed(2)),
+                        date: v.Time,
                         group: "used",
                       },
                       {
-                        value: Number(v["cpu"].system.toFixed(2)),
-                        date: date,
+                        value: Number(v.Avg["cpu"].system.toFixed(2)),
+                        date: v.Time,
                         group: "system",
                       },
                       {
-                        value: Number(v["cpu"].user.toFixed(2)),
-                        date: date,
+                        value: Number(v.Avg["cpu"].user.toFixed(2)),
+                        date: v.Time,
                         group: "user",
                       },
                     ];
@@ -100,8 +176,7 @@ export function StatsPage() {
               xAxis={{
                 label: {
                   formatter: (v) => {
-                    const date = new Date(parseInt(v));
-                    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                    return UtilDate.ConvertUtcToHMS(v);
                   },
                 },
               }}
@@ -112,17 +187,17 @@ export function StatsPage() {
                     Date.now() - (cpuStatsHistory?.length * 1000 - k * 1000);
                   return [
                     {
-                      value: (v.realfree / v.memtotal) * 100,
+                      value: (v.Stats.realfree / v.Stats.memtotal) * 100,
                       date: date,
                       group: "free",
                     },
                     {
-                      value: (v.cached / v.memtotal) * 100,
+                      value: (v.Stats.cached / v.Stats.memtotal) * 100,
                       date: date,
                       group: "cached",
                     },
                     {
-                      value: (v.buffers / v.memtotal) * 100,
+                      value: (v.Stats.buffers / v.Stats.memtotal) * 100,
                       date: date,
                       group: "buffer",
                     },
