@@ -37,7 +37,7 @@ const useNetworkHistoryStore = create<Store>((setState, getState) => ({
   interfaces: [],
   selected: "",
   fetch: async () => {
-    const response = await Api.get<Data[]>("/system/info/network/history");
+    const response = await Api.get<Data[]>("v1/network/history");
     setState({ data: response.data });
     setState({ interfaces: Object.keys(response.data[0]) });
     getState().selected === ""

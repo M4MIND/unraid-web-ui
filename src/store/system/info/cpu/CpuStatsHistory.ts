@@ -14,7 +14,7 @@ interface State {
 const useCpuStatsHistory = create<State>((set) => ({
   data: [],
   fetch: async () => {
-    const response = await Api.get<Data[]>("/system/info/cpu/stat");
+    const response = await Api.get<Data[]>("v1/cpu/history");
 
     set({ data: response.data });
   },

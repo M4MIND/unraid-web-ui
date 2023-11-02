@@ -134,10 +134,7 @@ interface DockerContainersStore {
 const useDockerContainersStore = create<DockerContainersStore>((set) => ({
   data: [],
   fetch: async () => {
-    const response = await Api.get<Container[]>(
-      "/system/info/docker/containers",
-    );
-
+    const response = await Api.get<Container[]>("/v1/docker/containers");
     set({ data: response.data });
   },
 }));

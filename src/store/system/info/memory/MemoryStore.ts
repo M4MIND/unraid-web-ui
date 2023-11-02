@@ -29,7 +29,7 @@ interface IUseMemoryStore {
 const useMemoryStore = create<IUseMemoryStore>((set) => ({
   data: null,
   fetch: async () => {
-    const response = await Api.get<Root>("/system/info/memory");
+    const response = await Api.get<Root>("/v1/memory/tick");
     set({ data: response.data });
   },
 }));

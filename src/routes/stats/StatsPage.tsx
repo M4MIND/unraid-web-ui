@@ -133,72 +133,72 @@ export function StatsPage() {
           </Card>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Card
-            size={"small"}
-            title={"Network"}
-            extra={
-              networkHistory[0] !== undefined ? (
-                <Select
-                  size={"small"}
-                  style={{ width: 120 }}
-                  onChange={changeInterface}
-                  defaultValue={interfaceSelected}
-                  options={networkInterfaces.map((v) => {
-                    return {
-                      label: v,
-                      value: v,
-                    };
-                  })}
-                ></Select>
-              ) : (
-                <Select
-                  style={{ width: 120 }}
-                  size={"small"}
-                  loading={true}
-                ></Select>
-              )
-            }
-          >
-            <Area
-              animation={false}
-              xField={"date"}
-              yField={"value"}
-              seriesField={"group"}
-              xAxis={{
-                label: {
-                  formatter: (v) => {
-                    const date = new Date(parseInt(v));
-                    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-                  },
-                },
-              }}
-              yAxis={{
-                label: {
-                  formatter: (v) => {
-                    return bytes(Number(v));
-                  },
-                },
-              }}
-              data={networkHistory
-                .map((time, k) => {
-                  const date =
-                    Date.now() - (networkHistory?.length * 1000 - k * 1000);
-                  return [
-                    {
-                      value: time[interfaceSelected].rxbytes,
-                      date: date,
-                      group: "rxbytes",
-                    },
-                    {
-                      value: -time[interfaceSelected].txbytes,
-                      date: date,
-                      group: "txbytes",
-                    },
-                  ];
-                })
-                .flat()}
-            ></Area>
-          </Card>
+          {/*<Card*/}
+          {/*  size={"small"}*/}
+          {/*  title={"Network"}*/}
+          {/*  extra={*/}
+          {/*    networkHistory[0] !== undefined ? (*/}
+          {/*      <Select*/}
+          {/*        size={"small"}*/}
+          {/*        style={{ width: 120 }}*/}
+          {/*        onChange={changeInterface}*/}
+          {/*        defaultValue={interfaceSelected}*/}
+          {/*        options={networkInterfaces.map((v) => {*/}
+          {/*          return {*/}
+          {/*            label: v,*/}
+          {/*            value: v,*/}
+          {/*          };*/}
+          {/*        })}*/}
+          {/*      ></Select>*/}
+          {/*    ) : (*/}
+          {/*      <Select*/}
+          {/*        style={{ width: 120 }}*/}
+          {/*        size={"small"}*/}
+          {/*        loading={true}*/}
+          {/*      ></Select>*/}
+          {/*    )*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <Area*/}
+          {/*    animation={false}*/}
+          {/*    xField={"date"}*/}
+          {/*    yField={"value"}*/}
+          {/*    seriesField={"group"}*/}
+          {/*    xAxis={{*/}
+          {/*      label: {*/}
+          {/*        formatter: (v) => {*/}
+          {/*          const date = new Date(parseInt(v));*/}
+          {/*          return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;*/}
+          {/*        },*/}
+          {/*      },*/}
+          {/*    }}*/}
+          {/*    yAxis={{*/}
+          {/*      label: {*/}
+          {/*        formatter: (v) => {*/}
+          {/*          return bytes(Number(v));*/}
+          {/*        },*/}
+          {/*      },*/}
+          {/*    }}*/}
+          {/*    data={networkHistory*/}
+          {/*      .map((time, k) => {*/}
+          {/*        const date =*/}
+          {/*          Date.now() - (networkHistory?.length * 1000 - k * 1000);*/}
+          {/*        return [*/}
+          {/*          {*/}
+          {/*            value: time[interfaceSelected].rxbytes,*/}
+          {/*            date: date,*/}
+          {/*            group: "rxbytes",*/}
+          {/*          },*/}
+          {/*          {*/}
+          {/*            value: -time[interfaceSelected].txbytes,*/}
+          {/*            date: date,*/}
+          {/*            group: "txbytes",*/}
+          {/*          },*/}
+          {/*        ];*/}
+          {/*      })*/}
+          {/*      .flat()}*/}
+          {/*  ></Area>*/}
+          {/*</Card>*/}
         </Col>
       </Row>
     </DashboardLayout>
