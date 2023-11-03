@@ -13,13 +13,17 @@ import bytes from "bytes";
 export function StatsPage() {
   const cpuStatsHistory = useCpuStatsHistory((state) => state.data);
   const memoryStatsHistory = useMemoryHistoryStore((state) => state.data);
-  const disksStatsHistory = useDisksHistoryStore((state) => state.data);
-  const disksList = useDisksHistoryStore((state) => state.disks);
+  const [disksStatsHistory, disksList, diskSelected, setSelectedDisk] =
+    useDisksHistoryStore((state) => [
+      state.data,
+      state.disks,
+      state.selected,
+      state.setSelected,
+    ]);
   const networkHistory = useNetworkHistoryStore((state) => state.data);
   const networkInterfaces = useNetworkHistoryStore((state) => state.interfaces);
   const interfaceSelected = useNetworkHistoryStore((state) => state.selected);
 
-  const [selectedDisk, setSelectedDisk] = useState("");
   const changeInterface = useNetworkHistoryStore(
     (state) => state.changeSelected,
   );
@@ -34,7 +38,7 @@ export function StatsPage() {
       useCpuStatsHistory.getState().fetch();
       useMemoryHistoryStore.getState().fetch();
       useNetworkHistoryStore.getState().fetch();
-      disksHistoryStore.getState().fetch();
+      useDisksHistoryStore.getState().tick();
     }, 1000);
     return () => {
       clearInterval(id);
@@ -51,9 +55,9 @@ export function StatsPage() {
               disksList.length !== 0 ? (
                 <Select
                   style={{ minWidth: 90 }}
-                  defaultValue={disksList[0]}
+                  defaultValue={diskSelected}
                   onChange={(v) => setSelectedDisk(v)}
-                  options={disksList.map((v) => {
+                  options={disksList.sort().map((v) => {
                     return {
                       value: v,
                       label: v,
@@ -89,17 +93,17 @@ export function StatsPage() {
                 seriesField={"group"}
                 data={disksStatsHistory
                   .map((inf) => {
-                    return inf.Avg.filter((v) => v.name === selectedDisk)
+                    return inf.Avg.filter((v) => v.name === diskSelected)
                       .map((v) => {
                         return [
                           {
-                            value: v.readbytes,
-                            group: `readbytes`,
+                            value: -v.readbytes,
+                            group: "readbytes",
                             date: inf.Time,
                           },
                           {
-                            value: -v.writebytes,
-                            group: `writebytes`,
+                            value: v.writebytes,
+                            group: "writebytes",
                             date: inf.Time,
                           },
                         ];
