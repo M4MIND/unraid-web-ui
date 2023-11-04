@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Api } from "../../../../service/api";
+import { Api } from "../../../../service/api/api";
 
 interface Stat {
   Stats: {
@@ -21,8 +21,8 @@ interface Stat {
     swaptotal: number;
     swapused: number;
     writeback: number;
-  }
-  Time: string
+  };
+  Time: string;
 }
 
 interface IUseMemoryStore {

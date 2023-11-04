@@ -9,17 +9,19 @@ import useDisksHistoryStore from "../../store/system/info/disks/DisksHistoryStor
 import disksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
 import UtilDate from "../../utils/UtilDate";
 import bytes from "bytes";
+import CpuChartStats from "./components/CpuChartStats";
+import DisksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
+import DiskChartStats from "./components/DiskChartStats";
 
 export function StatsPage() {
-  const cpuStatsHistory = useCpuStatsHistory((state) => state.data);
   const memoryStatsHistory = useMemoryHistoryStore((state) => state.data);
-  const [disksStatsHistory, disksList, diskSelected, setSelectedDisk] =
-    useDisksHistoryStore((state) => [
-      state.data,
-      state.disks,
-      state.selected,
-      state.setSelected,
-    ]);
+  // const [disksStatsHistory, disksList, diskSelected, setSelectedDisk] =
+  //   useDisksHistoryStore((state) => [
+  //     state.data,
+  //     state.disks,
+  //     state.selected,
+  //     state.setSelected,
+  //   ]);
   const networkHistory = useNetworkHistoryStore((state) => state.data);
   const networkInterfaces = useNetworkHistoryStore((state) => state.interfaces);
   const interfaceSelected = useNetworkHistoryStore((state) => state.selected);
@@ -29,16 +31,12 @@ export function StatsPage() {
   );
 
   useEffect(() => {
-    useCpuStatsHistory.getState().fetch();
     useMemoryHistoryStore.getState().fetch();
     useNetworkHistoryStore.getState().fetch();
-    disksHistoryStore.getState().fetch();
 
     const id = setInterval(() => {
-      useCpuStatsHistory.getState().fetch();
       useMemoryHistoryStore.getState().fetch();
       useNetworkHistoryStore.getState().fetch();
-      useDisksHistoryStore.getState().tick();
     }, 1000);
     return () => {
       clearInterval(id);
@@ -48,118 +46,10 @@ export function StatsPage() {
     <DashboardLayout>
       <Row gutter={[16, 16]}>
         <Col xs={12} sm={24} md={12}>
-          <Card
-            size={"small"}
-            title={"Disks Read / Write"}
-            extra={
-              disksList.length !== 0 ? (
-                <Select
-                  style={{ minWidth: 90 }}
-                  defaultValue={diskSelected}
-                  onChange={(v) => setSelectedDisk(v)}
-                  options={disksList.sort().map((v) => {
-                    return {
-                      value: v,
-                      label: v,
-                    };
-                  })}
-                  size={"small"}
-                ></Select>
-              ) : (
-                ""
-              )
-            }
-          >
-            {disksStatsHistory.length > 0 ? (
-              <Area
-                yField={"value"}
-                xField={"date"}
-                xAxis={{
-                  label: {
-                    formatter: (v) => {
-                      return UtilDate.ConvertUtcToHMS(v);
-                    },
-                  },
-                }}
-                yAxis={{
-                  label: {
-                    formatter: (v) => {
-                      return bytes(Number(v));
-                    },
-                  },
-                }}
-                animation={false}
-                isStack={false}
-                seriesField={"group"}
-                data={disksStatsHistory
-                  .map((inf) => {
-                    return inf.Avg.filter((v) => v.name === diskSelected)
-                      .map((v) => {
-                        return [
-                          {
-                            value: -v.readbytes,
-                            group: "readbytes",
-                            date: inf.Time,
-                          },
-                          {
-                            value: v.writebytes,
-                            group: "writebytes",
-                            date: inf.Time,
-                          },
-                        ];
-                      })
-                      .flat();
-                  })
-                  .flat()}
-              ></Area>
-            ) : (
-              "Loading"
-            )}
-          </Card>
+          <DiskChartStats />
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Card size={"small"} title={"CPU"}>
-            <Area
-              animation={false}
-              yField={"value"}
-              xField={"date"}
-              isStack={false}
-              xAxis={{
-                label: {
-                  formatter: (v) => {
-                    return UtilDate.ConvertUtcToHMS(v);
-                  },
-                },
-              }}
-              yAxis={{ max: 100, min: 0 }}
-              seriesField={"group"}
-              renderer={"canvas"}
-              data={
-                cpuStatsHistory
-                  ?.filter((v) => v.Avg !== null)
-                  .map((v, k) => {
-                    return [
-                      {
-                        value: Number((100 - v.Avg["cpu"].idle).toFixed(2)),
-                        date: v.Time,
-                        group: "used",
-                      },
-                      {
-                        value: Number(v.Avg["cpu"].system.toFixed(2)),
-                        date: v.Time,
-                        group: "system",
-                      },
-                      {
-                        value: Number(v.Avg["cpu"].user.toFixed(2)),
-                        date: v.Time,
-                        group: "user",
-                      },
-                    ];
-                  })
-                  .flat() ?? []
-              }
-            ></Area>
-          </Card>
+          <CpuChartStats></CpuChartStats>
         </Col>
         <Col xs={24} sm={24} md={12}>
           <Card size={"small"} title={"Memory"}>

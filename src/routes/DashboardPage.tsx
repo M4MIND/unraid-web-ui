@@ -20,7 +20,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import DashboardLayout from "../components/layout/DashboardLayout";
 
 import bytes from "bytes";
-import { Api } from "../service/api";
+import { Api } from "../service/api/api";
 
 export default function DashboardPage() {
   const [messageApi, contextHolder] = message.useMessage();

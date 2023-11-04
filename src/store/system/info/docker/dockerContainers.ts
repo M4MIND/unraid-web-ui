@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Api } from "../../../../service/api";
+import { Api } from "../../../../service/api/api";
 
 export interface Container {
   Id: string;
