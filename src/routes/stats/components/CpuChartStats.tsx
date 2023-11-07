@@ -1,8 +1,8 @@
 import { Card } from "antd";
-import useCpuStatsHistory from "../../../store/system/info/cpu/CpuStatsHistory";
+import useCpuStatsHistory from "../../../store/cpu/CpuStatsHistory";
 import { useEffect } from "react";
 import { Area } from "@ant-design/plots";
-import { red, green, blue } from "@ant-design/colors";
+
 const CpuChartStats = () => {
   const [history, loaded] = useCpuStatsHistory((state) => [
     state.data,

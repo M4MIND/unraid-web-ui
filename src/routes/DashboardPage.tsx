@@ -12,9 +12,9 @@ import {
 import CpuState from "../components/CpuState";
 import MemoryState from "../components/MemoryState";
 import React, { useEffect } from "react";
-import useMemoryStore from "../store/system/info/memory/MemoryStore";
-import useCpuStore from "../store/system/info/cpu/CpuStore";
-import useDockerContainersStore from "../store/system/info/docker/dockerContainers";
+import useMemoryStore from "../store/memory/MemoryStore";
+import useCpuStore from "../store/cpu/CpuStore";
+import useDockerContainersStore from "../store/docker/DockerContainers";
 import { PlayCircleOutlined, StopOutlined } from "@ant-design/icons";
 import CachedIcon from "@mui/icons-material/Cached";
 import DashboardLayout from "../components/layout/DashboardLayout";

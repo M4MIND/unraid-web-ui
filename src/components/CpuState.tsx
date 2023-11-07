@@ -1,5 +1,5 @@
 import { Badge, Card, Col, Progress as AntProgress, Row } from "antd";
-import useCpuStore, { CpuData } from "../store/system/info/cpu/CpuStore";
+import useCpuStore, { CpuData } from "../store/cpu/CpuStore";
 import React from "react";
 import { DashboardFilled, DashboardOutlined } from "@ant-design/icons";
 import { red } from "@ant-design/colors";
@@ -22,7 +22,7 @@ function CpuState() {
             .sort((a, b) => {
               const _a = Number(a.replace("cpu", ""));
               const _b = Number(b.replace("cpu", ""));
-              
+
               if (_a > _b) {
                 return 1;
               }

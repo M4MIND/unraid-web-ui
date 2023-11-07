@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
+import { Api } from "../../service/api/api";
 
 export interface CpuUtilization {
   guest: number;

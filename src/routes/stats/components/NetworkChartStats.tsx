@@ -1,24 +1,25 @@
 import { Card, Select } from "antd";
 import { Area } from "@ant-design/plots";
 import { useEffect } from "react";
-import useDisksHistoryStore from "../../../store/disks/DisksHistoryStore";
+import useNetworkHistoryStore from "../../../store/network/NetworkHistoryStore";
 import bytes from "bytes";
 
-const DiskChartStats = () => {
-  const [diskList, loaded, selected, history, setSelected] =
-    useDisksHistoryStore((state) => [
-      state.disks,
-      state.loaded,
+const NetworkChartStats = () => {
+  const [interfaces, selected, history, setSelected, loaded] =
+    useNetworkHistoryStore((state) => [
+      state.interfaces,
       state.selected,
       state.data,
-      state.setSelected,
+      state.changeSelected,
+      state.loaded,
     ]);
   useEffect(() => {
-    useDisksHistoryStore.getState().fetch();
+    useNetworkHistoryStore.getState().fetch();
 
     const id = setInterval(() => {
-      useDisksHistoryStore.getState().tick();
+      useNetworkHistoryStore.getState().fetchTick();
     }, 1000);
+
     return () => {
       clearInterval(id);
     };
@@ -26,16 +27,16 @@ const DiskChartStats = () => {
   return (
     <Card
       size={"small"}
-      title={"Disks Read/Write"}
+      title={"Network"}
       extra={
         <Select
+          size={"small"}
           loading={!loaded}
-          style={{ width: 160 }}
           key={selected}
           defaultValue={selected}
+          style={{ width: 140 }}
           onChange={(v) => setSelected(v)}
-          size={"small"}
-          options={diskList.map((v) => {
+          options={interfaces.map((v) => {
             return {
               value: v,
               label: v,
@@ -64,4 +65,4 @@ const DiskChartStats = () => {
   );
 };
 
-export default DiskChartStats;
+export default NetworkChartStats;

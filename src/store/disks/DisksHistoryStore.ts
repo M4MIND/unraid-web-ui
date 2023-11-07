@@ -1,9 +1,7 @@
 import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
-import ApiDisks, {
-  ApiDisksHistoryData,
-} from "../../../../service/api/gpu/api.disks";
-import UtilDate from "../../../../utils/UtilDate";
+import { Api } from "../../service/api/api";
+import ApiDisks, { ApiDisksHistoryData } from "../../service/api/gpu/api.disks";
+import UtilDate from "../../utils/UtilDate";
 
 interface Store {
   data: History;

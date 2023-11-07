@@ -1,6 +1,6 @@
 import { Card, Col, Row } from "antd";
 import React, { useEffect } from "react";
-import useMemoryStore from "../store/system/info/memory/MemoryStore";
+import useMemoryStore from "../store/memory/MemoryStore";
 import { LineChartOutlined } from "@ant-design/icons";
 
 import * as bytes from "bytes";

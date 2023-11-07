@@ -1,5 +1,5 @@
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import useDockerContainersStore from "../../store/system/info/docker/dockerContainers";
+import useDockerContainersStore from "../../store/docker/DockerContainers";
 import React, { useEffect } from "react";
 import { Badge, Card, Table } from "antd";
 

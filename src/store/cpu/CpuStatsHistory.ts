@@ -1,8 +1,16 @@
 import { create } from "zustand";
-import { ApiCpu, ApiCpuData } from "../../../../service/api/cpu/api.cpu";
-import UtilDate from "../../../../utils/UtilDate";
+import { ApiCpu, ApiCpuData } from "../../service/api/cpu/api.cpu";
+import UtilDate from "../../utils/UtilDate";
 
-const filter = ["idle", "steal", "nice", "irq", "softirq", "guestnice"];
+const filter = [
+  "idle",
+  "steal",
+  "nice",
+  "irq",
+  "softirq",
+  "guestnice",
+  "guest",
+];
 
 interface PreparedData {
   value: number;

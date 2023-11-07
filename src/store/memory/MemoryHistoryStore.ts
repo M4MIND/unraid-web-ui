@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
+import { Api } from "../../service/api/api";
 
 interface Stat {
   Stats: {
@@ -33,7 +33,7 @@ interface IUseMemoryStore {
 const useMemoryHistoryStore = create<IUseMemoryStore>((set) => ({
   data: [],
   fetch: async () => {
-    const response = await Api.get<Stat[]>("v1/memory/history");
+    const response = await Api.get<Stat[]>("/memory/history");
 
     set({ data: response.data });
   },

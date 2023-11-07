@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
+import { Api } from "../../service/api/api";
 
 export interface Container {
   Id: string;
@@ -134,7 +134,7 @@ interface DockerContainersStore {
 const useDockerContainersStore = create<DockerContainersStore>((set) => ({
   data: [],
   fetch: async () => {
-    const response = await Api.get<Container[]>("/v1/docker/containers");
+    const response = await Api.get<Container[]>("/docker/containers");
     set({ data: response.data });
   },
 }));
