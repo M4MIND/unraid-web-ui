@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import { ApiCpu, ApiCpuData } from '../../../../api/cpu/api.cpu'
-import {Api} from '../../../../api/api'
-import {UtilDate} from '../../../../utils/UtilDate'
+import { ApiCpu, ApiCpuData } from '../../api/cpu/api.cpu'
+import {Api} from '../../api/api'
+import {UtilDate} from '../../utils/UtilDate'
 
 const filter = ['idle', 'steal', 'nice', 'irq', 'softirq', 'guestnice']
 

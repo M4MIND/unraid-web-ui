@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { Api } from '../../../../api/api'
-import {DockerContainer} from '../../../../api/docker/response/Container'
+import { Api } from '../../api/api'
+import {DockerContainer} from '../../api/docker/response/Container'
 
 interface DockerContainersStore {
   data: DockerContainer[];

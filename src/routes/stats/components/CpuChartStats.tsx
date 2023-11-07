@@ -1,7 +1,7 @@
 import { Card } from 'antd'
 import { useEffect } from 'react'
 import { Area } from '@ant-design/plots'
-import {useCpuStatsHistory} from '../../../store/system/info/cpu/CpuStatsHistory'
+import {useCpuStatsHistory} from '../../../store/cpu/CpuStatsHistory'
 
 export const CpuChartStats = () => {
   const [history, loaded] = useCpuStatsHistory(state => [

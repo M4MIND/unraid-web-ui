@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { Api } from '../../../../api/api'
-import {Stat} from '../../../../api/memory/memory.api'
+import { Api } from '../../api/api'
+import {Stat} from '../../api/memory/memory.api'
 
 interface IUseMemoryStore {
   data: Stat | null;

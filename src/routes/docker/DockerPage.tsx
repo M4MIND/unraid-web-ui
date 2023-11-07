@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {Card, Table, Tag} from 'antd'
-import {useDockerContainersStore} from '../../store/system/info/docker/dockerContainers'
 import {PlayCircleOutlined, StopOutlined, SyncOutlined} from '@ant-design/icons'
+import {useDockerContainersStore} from '../../store/docker/DockerContainers'
 
 export const DockerPage = () => {
   const docker = useDockerContainersStore(state => state.data)

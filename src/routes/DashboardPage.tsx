@@ -17,9 +17,9 @@ import CachedIcon from '@mui/icons-material/Cached'
 
 import bytes from 'bytes'
 import {Api} from '../api/api'
-import {useCpuStore} from '../store/system/info/cpu/CpuStore'
-import {useMemoryStore} from '../store/system/info/memory/MemoryStore'
-import {useDockerContainersStore} from '../store/system/info/docker/dockerContainers'
+import {useCpuStore} from '../store/cpu/CpuStore'
+import {useMemoryStore} from '../store/memory/MemoryStore'
+import {useDockerContainersStore} from '../store/docker/DockerContainers'
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage()

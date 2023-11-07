@@ -2,7 +2,7 @@ import { Card, Col, Row } from 'antd'
 import React from 'react'
 import { DashboardFilled } from '@ant-design/icons'
 import { Progress } from './stats/Progress'
-import { useCpuStore } from '../store/system/info/cpu/CpuStore'
+import {useCpuStore} from '../store/cpu/CpuStore'
 
 export const CpuState = () => {
   const cpuState = useCpuStore(state => state.data)

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { Api } from '../../../../api/api'
-import { ApiCpuData } from '../../../../api/cpu/api.cpu'
+import {ApiCpuData} from '../../api/cpu/api.cpu'
+import {Api} from '../../api/api'
 
 interface CpuStore {
   data: ApiCpuData | null;
