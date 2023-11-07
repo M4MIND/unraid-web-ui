@@ -1,49 +1,45 @@
-import { Badge, Card, Col, Progress as AntProgress, Row } from "antd";
-import useCpuStore, { CpuData } from "../store/cpu/CpuStore";
-import React from "react";
-import { DashboardFilled, DashboardOutlined } from "@ant-design/icons";
-import { red } from "@ant-design/colors";
-import { Progress } from "./stats/Progress";
+import { Card, Col, Row } from 'antd'
+import React from 'react'
+import { DashboardFilled } from '@ant-design/icons'
+import { Progress } from './stats/Progress'
+import {useCpuStore} from '../store/cpu/CpuStore'
 
-function CpuState() {
-  const cpuState = useCpuStore((state) => state.data);
+export const CpuState = () => {
+  const cpuState = useCpuStore(state => state.data)
 
   return (
     <Card
-      size={"small"}
+      size={'small'}
       extra={<DashboardFilled />}
-      title={"CPU"}
+      title={'CPU'}
       loading={!cpuState}
     >
       {cpuState ? (
         <Row gutter={[12, 0]}>
-          {Object.keys(cpuState.avg)
-            .filter((v) => v !== "cpu")
-            .sort((a, b) => {
-              const _a = Number(a.replace("cpu", ""));
-              const _b = Number(b.replace("cpu", ""));
+          {Object.keys(cpuState.average)
+            .filter(v => v !== 'cpu')
+            .sort((first, second) => {
+              const firstCoreNumber = Number(first.replace('cpu', ''))
+              const secondCoreNumber = Number(second.replace('cpu', ''))
 
-              if (_a > _b) {
-                return 1;
+              if (firstCoreNumber > secondCoreNumber) {
+                return 1
               }
-              if (_a < _b) {
-                return -1;
+              if (firstCoreNumber < secondCoreNumber) {
+                return -1
               }
-              return 0;
+
+              return 0
             })
-            .map((v) => {
-              return (
-                <Col key={v} span={12}>
-                  <Progress percent={100 - cpuState.avg[v].idle} title={v} />
-                </Col>
-              );
-            })}
+            .map(v => (
+              <Col key={v} span={12}>
+                <Progress percent={100 - cpuState.average[v].idle} title={v} />
+              </Col>
+            ))}
         </Row>
       ) : (
-        "Loading"
+        'Loading'
       )}
     </Card>
-  );
+  )
 }
-
-export default CpuState;

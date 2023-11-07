@@ -7,93 +7,103 @@ import {
   Row,
   Space,
   Statistic,
-  Table,
-} from "antd";
-import CpuState from "../components/CpuState";
-import MemoryState from "../components/MemoryState";
-import React, { useEffect } from "react";
-import useMemoryStore from "../store/memory/MemoryStore";
-import useCpuStore from "../store/cpu/CpuStore";
-import useDockerContainersStore from "../store/docker/DockerContainers";
-import { PlayCircleOutlined, StopOutlined } from "@ant-design/icons";
-import CachedIcon from "@mui/icons-material/Cached";
-import DashboardLayout from "../components/layout/DashboardLayout";
+  Table
+} from 'antd'
+import {CpuState} from '../components/CpuState'
+import {MemoryState} from '../components/MemoryState'
+import React, {useEffect} from 'react'
+import {PlayCircleOutlined, StopOutlined} from '@ant-design/icons'
+import CachedIcon from '@mui/icons-material/Cached'
 
-import bytes from "bytes";
-import { Api } from "../service/api/api";
+import bytes from 'bytes'
+import {Api} from '../api/api'
+import {useCpuStore} from '../store/cpu/CpuStore'
+import {useMemoryStore} from '../store/memory/MemoryStore'
+import {useDockerContainersStore} from '../store/docker/DockerContainers'
 
-export default function DashboardPage() {
-  const [messageApi, contextHolder] = message.useMessage();
-  const containers = useDockerContainersStore((state) => state.data);
-  const cpu = useCpuStore((state) => state.data);
-  const memory = useMemoryStore((state) => state.data);
+export const DashboardPage = () => {
+  const [messageApi, contextHolder] = message.useMessage()
+  const cpuState = useCpuStore(state => state.data)
+  const fetchCpu = useCpuStore(state => state.fetch)
+
+  const memory = useMemoryStore(state => state.data)
+  const fetchMemory = useMemoryStore(state => state.fetch)
+
+  const containers = useDockerContainersStore(state => state.data)
+  const fetchContainers = useDockerContainersStore(state => state.fetch)
 
   useEffect(() => {
-    useCpuStore.getState().fetch();
-    useMemoryStore.getState().fetch();
-    useDockerContainersStore.getState().fetch();
+    fetchCpu()
+    fetchMemory()
+    fetchContainers()
 
     const id = setInterval(() => {
-      useCpuStore.getState().fetch();
-      useMemoryStore.getState().fetch();
-      useDockerContainersStore.getState().fetch();
-    }, 1000);
+      fetchCpu()
+      fetchMemory()
+      fetchContainers()
+    }, 1000)
 
     return () => {
-      clearInterval(id);
-    };
-  }, []);
+      clearInterval(id)
+    }
+  }, [fetchContainers, fetchCpu, fetchMemory])
+
+  const cpuLoad = cpuState?.average['cpu'].total ?? 0
+  const memoryFree = memory && memory.stats ? bytes(memory.stats.realfree * 1024) : 0
+
   return (
-    <DashboardLayout>
+    <div>
       {contextHolder}
       <Row gutter={[12, 12]}>
-        <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
+        <Col xs={8} sm={6} md={4} key="cpu-col">
+          <Card size={'small'}>
             <Statistic
+              key={'cpu-statistic'}
               precision={2}
-              value={`${100 - (cpu?.avg["cpu"].idle ?? 0)}`}
-              suffix={"%"}
-              title={"CPU"}
-            ></Statistic>
+              value={cpuLoad}
+              suffix={'%'}
+              title={'CPU'}
+            />
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
+          <Card size={'small'}>
             <Statistic
-              value={bytes(memory ? memory.realfree * 1024 : 0)}
-              title={"Memory free"}
-            ></Statistic>
+              key={'memory-statistic'}
+              value={memoryFree}
+              title={'Memory free'}
+            />
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
-            <Statistic title={"Stoped VMs"}></Statistic>
+          <Card size={'small'}>
+            <Statistic title={'Stoped VMs'}></Statistic>
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
+          <Card size={'small'}>
             <Statistic
-              prefix={<PlayCircleOutlined />}
+              prefix={<PlayCircleOutlined/>}
               title="Running containers"
-              value={containers?.filter((v) => v.State === "running").length}
+              value={containers?.filter(v => v.State === 'running').length}
             ></Statistic>
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
+          <Card size={'small'}>
             <Statistic
-              prefix={<CachedIcon />}
+              prefix={<CachedIcon/>}
               title="Restarting containers"
-              value={containers?.filter((v) => v.State === "restarting").length}
+              value={containers?.filter(v => v.State === 'restarting').length}
             ></Statistic>
           </Card>
         </Col>
         <Col xs={8} sm={6} md={4}>
-          <Card size={"small"}>
+          <Card size={'small'}>
             <Statistic
-              prefix={<StopOutlined />}
+              prefix={<StopOutlined/>}
               title="Stoped containers"
-              value={containers?.filter((v) => v.State === "exited").length}
+              value={containers?.filter(v => v.State === 'exited').length}
             ></Statistic>
           </Card>
         </Col>
@@ -111,73 +121,78 @@ export default function DashboardPage() {
           </Row>
         </Col>
         <Col xs={24} sm={24} md={16}>
-          <Card size={"small"} title={"Docker containers"}>
+          <Card size={'small'} title={'Docker containers'}>
             {containers ? (
               <Table
-                size={"small"}
+                size={'small'}
                 dataSource={containers ?? []}
                 columns={[
-                  { title: "Name", dataIndex: "Names", key: "Names" },
-                  { title: "Status", dataIndex: "Status", key: "Status" },
-                  { title: "State", dataIndex: "State", key: "State" },
+                  {title: 'Name', dataIndex: 'Names', key: 'Names'},
+                  {title: 'Status', dataIndex: 'Status', key: 'Status'},
+                  {title: 'State', dataIndex: 'State', key: 'State'},
                   {
-                    title: "Actions",
-                    render: (value) => (
+                    title: 'Actions',
+                    render: value => (
                       <Space wrap>
-                        {value.State === "exited" ? (
+                        {value.State === 'exited' ? (
                           <Button
-                            type={"primary"}
-                            size={"small"}
+                            type={'primary'}
+                            size={'small'}
                             onClick={() => {
-                              Api.get(
-                                `/docker/container/command/${value.Id}/start`,
-                              ).then(() => {
-                                messageApi.info("Container start");
-                              });
+                              void messageApi.loading('Starting container...')
+                              Api.docker.updateContainer(value.id)
+                                .then(() => {
+                                  messageApi.destroy()
+                                  void messageApi.success('Container started')
+                                })
+                                .catch(() => {
+                                  messageApi.destroy()
+                                  void messageApi.error('Failed to start container')
+                                })
                             }}
                           >
                             Start
                           </Button>
                         ) : (
-                          ""
+                          ''
                         )}
 
-                        {value.State === "running" ? (
-                          <Button type={"primary"} size={"small"}>
+                        {value.State === 'running' ? (
+                          <Button type={'primary'} size={'small'}>
                             Restart
                           </Button>
                         ) : (
-                          ""
+                          ''
                         )}
-                        {value.State === "running" ||
-                        value.State === "restarting" ? (
-                          <Button
-                            type={"primary"}
-                            size={"small"}
-                            onClick={() => {
-                              Api.get(
-                                `/docker/container/command/${value.Id}/stop`,
-                              ).then(() => {
-                                messageApi.info("Container stopped");
-                              });
-                            }}
-                          >
+                        {value.State === 'running' ||
+                        value.State === 'restarting' ? (
+                            <Button
+                              type={'primary'}
+                              size={'small'}
+                              onClick={() => {
+                                messageApi.loading('Starting container...')
+                                Api.docker.updateContainer(value.id).then(() => {
+                                  messageApi.destroy()
+                                  messageApi.info('Container stopped')
+                                })
+                              }}
+                            >
                             Stop
-                          </Button>
-                        ) : (
-                          ""
-                        )}
+                            </Button>
+                          ) : (
+                            ''
+                          )}
                       </Space>
-                    ),
-                  },
+                    )
+                  }
                 ]}
               ></Table>
             ) : (
-              "Loading"
+              'Loading'
             )}
           </Card>
         </Col>
       </Row>
-    </DashboardLayout>
-  );
+    </div>
+  )
 }

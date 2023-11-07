@@ -1,4 +1,10 @@
-import { Api } from "../api";
+import {apiRootUrl, unraidApi} from '../common/base-api'
+
+const basePath = '/network'
+
+const api = unraidApi.extend({
+  prefixUrl: apiRootUrl + basePath
+})
 
 export interface ApiNetworkHistoryData {
   Time: string;
@@ -23,12 +29,8 @@ export interface ApiNetworkHistoryData {
     };
   };
 }
-const ApiNetwork = {
-  GetHistory: async () => {
-    return await Api.get<ApiNetworkHistoryData[]>("/network/history");
-  },
-  GetTick: async () => {
-    return await Api.get<ApiNetworkHistoryData>("/network/history/tick");
-  },
-};
-export default ApiNetwork;
+
+export const ApiNetwork = {
+  getHistory: () => api.get('history').json<ApiNetworkHistoryData[]>(),
+  getTick: () => api.get('history/tick').json<ApiNetworkHistoryData>()
+}

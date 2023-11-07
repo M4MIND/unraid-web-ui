@@ -1,16 +1,9 @@
-import { create } from "zustand";
-import { ApiCpu, ApiCpuData } from "../../service/api/cpu/api.cpu";
-import UtilDate from "../../utils/UtilDate";
+import { create } from 'zustand'
+import { ApiCpu, ApiCpuData } from '../../api/cpu/api.cpu'
+import {Api} from '../../api/api'
+import {UtilDate} from '../../utils/UtilDate'
 
-const filter = [
-  "idle",
-  "steal",
-  "nice",
-  "irq",
-  "softirq",
-  "guestnice",
-  "guest",
-];
+const filter = ['idle', 'steal', 'nice', 'irq', 'softirq', 'guestnice']
 
 interface PreparedData {
   value: number;
@@ -26,45 +19,40 @@ interface State {
 }
 
 const prepareData = (data: ApiCpuData): PreparedData[] => {
-  const date = UtilDate.ConvertUtcToHMS(data.Time);
-  return Object.keys(data.Avg["cpu"])
-    .filter((v) => filter.indexOf(v) < 0)
-    .map((v) => {
-      return {
-        value: Number(data.Avg["cpu"][v]),
-        date: date,
-        group: v,
-      };
-    });
-};
+  const date = UtilDate.ConvertUtcToHMS(data.time)
 
-const useCpuStatsHistory = create<State>((setState, getState) => ({
+  return Object.keys(data.average['cpu'])
+    .filter(v => !filter.includes(v))
+    .map(v => ({
+      value: Number(data.average['cpu'][v]),
+      date,
+      group: v
+    }))
+}
+
+export const useCpuStatsHistory = create<State>((setState, getState) => ({
   data: [],
   loaded: false,
   fetchAll: async () => {
-    const response = await ApiCpu.History();
+    const response = await Api.cpu.history()
 
-    const normalize = response.data
-      .filter((v) => v.Avg !== null)
-      .map((v, k) => {
-        return prepareData(v);
-      })
-      .flat();
+    const normalize = response
+      .filter(v => v.average !== null)
+      .map(v => prepareData(v))
+      .flat()
 
-    setState({ loaded: true });
+    setState({ loaded: true })
 
-    setState({ data: normalize });
+    setState({ data: normalize })
   },
   fetchTick: async () => {
-    const response = await ApiCpu.Tick();
-    const data = getState().data;
+    const response = await ApiCpu.tick()
+    const data = getState().data
 
-    data.push(...prepareData(response.data));
+    data.push(...prepareData(response))
 
-    setState({ loaded: true });
+    setState({ loaded: true })
 
-    setState({ data: data });
-  },
-}));
-
-export default useCpuStatsHistory;
+    setState({ data })
+  }
+}))
