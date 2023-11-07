@@ -1,62 +1,74 @@
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import useDockerContainersStore from "../../store/system/info/docker/dockerContainers";
-import React, { useEffect } from "react";
-import { Badge, Card, Table } from "antd";
+import React, {useEffect} from 'react'
+import {Card, Table, Tag} from 'antd'
+import {useDockerContainersStore} from '../../store/system/info/docker/dockerContainers'
+import {PlayCircleOutlined, StopOutlined, SyncOutlined} from '@ant-design/icons'
 
-export default function DockerPage() {
-  const docker = useDockerContainersStore((state) => state.data);
+export const DockerPage = () => {
+  const docker = useDockerContainersStore(state => state.data)
   useEffect(() => {
-    useDockerContainersStore.getState().fetch();
+    useDockerContainersStore.getState()
+      .fetch()
 
     const id = setInterval(() => {
-      useDockerContainersStore.getState().fetch();
-    }, 1000);
+      useDockerContainersStore.getState()
+        .fetch()
+    }, 1000)
 
     return () => {
-      clearInterval(id);
-    };
-  }, []);
+      clearInterval(id)
+    }
+  }, [])
+
   return (
-    <DashboardLayout>
+    <div>
       <Card>
         <Table
-          loading={docker == null}
+          loading={docker === null}
           bordered={true}
-          size={"small"}
+          size={'small'}
           pagination={false}
           scroll={{
-            x: true,
+            x: true
           }}
           columns={[
             {
-              title: "Name",
-              dataIndex: "Names",
-              render: (value, record, index) => {
-                return value[0].replace("/", "");
-              },
+              title: 'Name',
+              dataIndex: 'Names',
+              key: 'Names',
+              render: value => value[0].replace('/', '')
             },
             {
-              title: "Image",
-              dataIndex: "Image",
+              title: 'Image',
+              key: 'Image',
+              dataIndex: 'Image'
             },
             {
-              title: "Network",
-              dataIndex: "HostConfig",
-              render: (value, record, index) => {
-                return value.NetworkMode;
-              },
+              title: 'Network',
+              key: 'Network',
+              dataIndex: 'HostConfig',
+              render: value => value.NetworkMode
             },
             {
-              title: "State",
-              dataIndex: "State",
-              render: (value, record, index) => {
-                return <Badge size={"small"} count={value}></Badge>;
-              },
-            },
+              title: 'State',
+              key: 'State',
+              dataIndex: 'State',
+              render: value => {
+                switch (value) {
+                  case 'running':
+                    return <Tag color="success" icon={<PlayCircleOutlined/>}>processing</Tag>
+                  case 'created':
+                    return <Tag color="warning" icon={<SyncOutlined/>}>created</Tag>
+                  case 'exited':
+                    return <Tag color="error" icon={<StopOutlined/>}>stopped</Tag>
+                  default:
+                    return <Tag color="default">unknown</Tag>
+                }
+              }
+            }
           ]}
           dataSource={docker ?? []}
         ></Table>
       </Card>
-    </DashboardLayout>
-  );
+    </div>
+  )
 }

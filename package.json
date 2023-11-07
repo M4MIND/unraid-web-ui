@@ -3,38 +3,60 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@4.0.1",
   "dependencies": {
     "@ant-design/colors": "^7.0.0",
     "@ant-design/icons": "^5.2.6",
     "@ant-design/plots": "^1.2.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.14.15",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@mui/icons-material": "^5.14.16",
+    "@mui/material": "^5.14.17",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.59",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
-    "antd": "^5.10.2",
-    "axios": "^1.5.1",
+    "antd": "^5.11.0",
     "byte-size": "^8.1.1",
     "bytes": "^3.1.2",
     "echarts": "^5.4.3",
+    "ky": "^1.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
-    "recharts": "^2.9.1",
+    "recharts": "^2.9.3",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "zustand": "^4.4.4"
   },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/bytes": "^3.1.3",
+    "@types/echarts": "^4.9.20",
+    "@types/prop-types": "^15",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vitejs/plugin-react": "^4.1.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "prettier": "^3.0.3",
+    "prop-types": "^15.8.1",
+    "undici-types": "^5.27.2",
+    "vite": "^4.5.0",
+    "vite-plugin-html": "^3.2.0",
+    "vite-plugin-svgr": "^4.1.0",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^0.34.6"
+  },
   "scripts": {
     "start": "vite serve --host 0.0.0.0 --port 3000",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "tsc && vite build",
+    "test": "vitest",
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "eslintConfig": {
     "extends": [
@@ -53,15 +75,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/bytes": "^3.1.3",
-    "@types/echarts": "^4.9.20",
-    "@vitejs/plugin-react": "^4.1.0",
-    "prettier": "^3.0.3",
-    "vite": "^4.5.0",
-    "vite-plugin-html": "^3.2.0",
-    "vite-plugin-svgr": "^4.1.0",
-    "vite-tsconfig-paths": "^4.2.1"
   }
 }

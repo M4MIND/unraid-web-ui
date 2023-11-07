@@ -1,20 +1,15 @@
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Select } from "antd";
-import { Area } from "@ant-design/plots";
-import useCpuStatsHistory from "../../store/system/info/cpu/CpuStatsHistory";
-import useMemoryHistoryStore from "../../store/system/info/memory/MemoryHistoryStore";
-import useNetworkHistoryStore from "../../store/system/info/network/NetworkHistoryStore";
-import useDisksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
-import disksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
-import UtilDate from "../../utils/UtilDate";
-import bytes from "bytes";
-import CpuChartStats from "./components/CpuChartStats";
-import DisksHistoryStore from "../../store/system/info/disks/DisksHistoryStore";
-import DiskChartStats from "./components/DiskChartStats";
+import React, { useEffect } from 'react'
+import { Card, Col, Row } from 'antd'
+import { Area } from '@ant-design/plots'
+import {UtilDate} from '../../utils/UtilDate'
+import {useMemoryHistoryStore} from '../../store/system/info/memory/MemoryHistoryStore'
+import {useNetworkHistoryStore} from '../../store/system/info/network/NetworkHistoryStore'
+import {DiskChartStats} from './components/DiskChartStats'
+import {CpuChartStats} from './components/CpuChartStats'
+import {useCpuStatsHistory} from '../../store/system/info/cpu/CpuStatsHistory'
 
 export function StatsPage() {
-  const memoryStatsHistory = useMemoryHistoryStore((state) => state.data);
+  const memoryStatsHistory = useMemoryHistoryStore(state => state.data)
   // const [disksStatsHistory, disksList, diskSelected, setSelectedDisk] =
   //   useDisksHistoryStore((state) => [
   //     state.data,
@@ -22,28 +17,32 @@ export function StatsPage() {
   //     state.selected,
   //     state.setSelected,
   //   ]);
-  const networkHistory = useNetworkHistoryStore((state) => state.data);
-  const networkInterfaces = useNetworkHistoryStore((state) => state.interfaces);
-  const interfaceSelected = useNetworkHistoryStore((state) => state.selected);
+  const networkHistory = useNetworkHistoryStore(state => state.data)
+  const networkInterfaces = useNetworkHistoryStore(state => state.interfaces)
+  const interfaceSelected = useNetworkHistoryStore(state => state.selected)
+
+  const cpuStatsHistory = useCpuStatsHistory(state => state.data)
 
   const changeInterface = useNetworkHistoryStore(
-    (state) => state.changeSelected,
-  );
+    state => state.changeSelected
+  )
 
   useEffect(() => {
-    useMemoryHistoryStore.getState().fetch();
-    useNetworkHistoryStore.getState().fetch();
+    useMemoryHistoryStore.getState().fetch()
+    useNetworkHistoryStore.getState().fetch()
 
     const id = setInterval(() => {
-      useMemoryHistoryStore.getState().fetch();
-      useNetworkHistoryStore.getState().fetch();
-    }, 1000);
+      useMemoryHistoryStore.getState().fetch()
+      useNetworkHistoryStore.getState().fetch()
+    }, 1000)
+
     return () => {
-      clearInterval(id);
-    };
-  }, []);
+      clearInterval(id)
+    }
+  }, [])
+
   return (
-    <DashboardLayout>
+    <div>
       <Row gutter={[16, 16]}>
         <Col xs={12} sm={24} md={12}>
           <DiskChartStats />
@@ -52,57 +51,54 @@ export function StatsPage() {
           <CpuChartStats></CpuChartStats>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          <Card size={"small"} title={"Memory"}>
+          <Card size={'small'} title={'Memory'}>
             <Area
               animation={false}
-              xField={"date"}
-              yField={"value"}
-              seriesField={"group"}
+              xField={'date'}
+              yField={'value'}
+              seriesField={'group'}
               isStack={false}
-              renderer={"canvas"}
+              renderer={'canvas'}
               yAxis={{
                 label: {
-                  formatter: (v) => {
-                    return `${Number(v).toFixed(2)}%`;
-                  },
-                },
+                  formatter: v => `${Number(v).toFixed(2)}%`
+                }
               }}
               xAxis={{
                 label: {
-                  formatter: (v) => {
-                    return UtilDate.ConvertUtcToHMS(v);
-                  },
-                },
+                  formatter: v => UtilDate.ConvertUtcToHMS(v)
+                }
               }}
               data={memoryStatsHistory
-                .filter((v) => v !== null)
+                .filter(v => v !== null)
                 .map((v, k) => {
                   const date =
-                    Date.now() - (cpuStatsHistory?.length * 1000 - k * 1000);
+                    Date.now() - (cpuStatsHistory?.length * 1000 - k * 1000)
+
                   return [
                     {
-                      value: (v.Stats.realfree / v.Stats.memtotal) * 100,
-                      date: date,
-                      group: "free",
+                      value: (v.stats.realfree / v.stats.memtotal) * 100,
+                      date,
+                      group: 'free'
                     },
                     {
-                      value: (v.Stats.cached / v.Stats.memtotal) * 100,
-                      date: date,
-                      group: "cached",
+                      value: (v.stats.cached / v.stats.memtotal) * 100,
+                      date,
+                      group: 'cached'
                     },
                     {
-                      value: (v.Stats.buffers / v.Stats.memtotal) * 100,
-                      date: date,
-                      group: "buffer",
-                    },
-                  ];
+                      value: (v.stats.buffers / v.stats.memtotal) * 100,
+                      date,
+                      group: 'buffer'
+                    }
+                  ]
                 })
                 .flat()}
             />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={12}>
-          {/*<Card*/}
+          {/* <Card*/}
           {/*  size={"small"}*/}
           {/*  title={"Network"}*/}
           {/*  extra={*/}
@@ -127,7 +123,7 @@ export function StatsPage() {
           {/*      ></Select>*/}
           {/*    )*/}
           {/*  }*/}
-          {/*>*/}
+          {/* >*/}
           {/*  <Area*/}
           {/*    animation={false}*/}
           {/*    xField={"date"}*/}
@@ -167,9 +163,9 @@ export function StatsPage() {
           {/*      })*/}
           {/*      .flat()}*/}
           {/*  ></Area>*/}
-          {/*</Card>*/}
+          {/* </Card>*/}
         </Col>
       </Row>
-    </DashboardLayout>
-  );
+    </div>
+  )
 }

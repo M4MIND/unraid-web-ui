@@ -1,6 +1,10 @@
-import { Api } from "../api";
+import {apiRootUrl, unraidApi} from '../common/base-api'
 
-const basePath = "/disks";
+const basePath = '/disks'
+
+const api = unraidApi.extend({
+  prefixUrl: apiRootUrl + basePath
+})
 
 export interface ApiDisksHistoryData {
   Time: string;
@@ -20,13 +24,7 @@ export interface ApiDisksHistoryData {
   }[];
 }
 
-const ApiDisks = {
-  GetHistory: async () => {
-    return await Api.get<ApiDisksHistoryData[]>(`${basePath}/history`);
-  },
-  GetTick: async () => {
-    return await Api.get<ApiDisksHistoryData>(`${basePath}/history/tick`);
-  },
-};
-
-export default ApiDisks;
+export const ApiDisks = {
+  getHistory: (): Promise<ApiDisksHistoryData[]> => api.get('history').json(),
+  getTick: () => api.get('history/tick').json<ApiDisksHistoryData>()
+}

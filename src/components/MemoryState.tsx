@@ -1,35 +1,41 @@
-import { Card, Col, Row } from "antd";
-import React, { useEffect } from "react";
-import useMemoryStore from "../store/system/info/memory/MemoryStore";
-import { LineChartOutlined } from "@ant-design/icons";
+import { Card } from 'antd'
+import React from 'react'
+import { LineChartOutlined } from '@ant-design/icons'
 
-import * as bytes from "bytes";
-import { Progress } from "./stats/Progress";
+import { Progress } from './stats/Progress'
+import {useMemoryStore} from '../store/system/info/memory/MemoryStore'
 
-function MemoryState() {
-  const memoryStore = useMemoryStore((state) => state.data);
+export const MemoryState = () => {
+  const memoryStore = useMemoryStore(state => state.data)
+
+  const stats = memoryStore?.stats
+
+  let content: React.ReactNode
+  if (!stats) {
+    content = 'Loading'
+  } else {
+    const {realfree, cached, buffers, memtotal} = stats
+    content = (
+      <>
+        <Progress
+          title={'Free'}
+          percent={(realfree / memtotal) * 100}
+        />
+        <Progress
+          percent={(cached / memtotal) * 100}
+          title={'Cached'}
+        />
+        <Progress
+          percent={(buffers / memtotal) * 100}
+          title={'Buffer'}
+        />
+      </>
+    )
+  }
+
   return (
-    <Card size={"small"} title="Memory" extra={<LineChartOutlined />}>
-      {!memoryStore ? (
-        "Loading"
-      ) : (
-        <>
-          <Progress
-            title={"Free"}
-            percent={(memoryStore.realfree / memoryStore.memtotal) * 100}
-          />
-          <Progress
-            percent={(memoryStore.cached / memoryStore.memtotal) * 100}
-            title={"Cached"}
-          />
-          <Progress
-            percent={(memoryStore.buffers / memoryStore.memtotal) * 100}
-            title={"Buffer"}
-          />
-        </>
-      )}
+    <Card size={'small'} title="Memory" extra={<LineChartOutlined />}>
+      {content}
     </Card>
-  );
+  )
 }
-
-export default MemoryState;

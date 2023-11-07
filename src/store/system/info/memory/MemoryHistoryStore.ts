@@ -1,42 +1,17 @@
-import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
-
-interface Stat {
-  Stats: {
-    active: number;
-    buffers: number;
-    cached: number;
-    commitlimit: number;
-    committed_as: number;
-    dirty: number;
-    inactive: number;
-    mapped: number;
-    memfree: number;
-    memtotal: number;
-    memused: number;
-    realfree: number;
-    slab: number;
-    swapcached: number;
-    swapfree: number;
-    swaptotal: number;
-    swapused: number;
-    writeback: number;
-  };
-  Time: string;
-}
+import { create } from 'zustand'
+import { Api } from '../../../../api/api'
+import {Stat} from '../../../../api/memory/memory.api'
 
 interface IUseMemoryStore {
   data: Stat[];
   fetch: () => void;
 }
 
-const useMemoryHistoryStore = create<IUseMemoryStore>((set) => ({
+export const useMemoryHistoryStore = create<IUseMemoryStore>(set => ({
   data: [],
   fetch: async () => {
-    const response = await Api.get<Stat[]>("v1/memory/history");
+    const response = await Api.memory.getHistory()
 
-    set({ data: response.data });
-  },
-}));
-
-export default useMemoryHistoryStore;
+    set({ data: response })
+  }
+}))

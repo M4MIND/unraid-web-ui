@@ -1,9 +1,9 @@
-import { create } from "zustand";
-import { Api } from "../../../../service/api/api";
-import ApiDisks, {
-  ApiDisksHistoryData,
-} from "../../../../service/api/gpu/api.disks";
-import UtilDate from "../../../../utils/UtilDate";
+import { create } from 'zustand'
+import { Api } from '../../../../api/api'
+import {
+  ApiDisksHistoryData
+} from '../../../../api/gpu/api.disks'
+import {UtilDate} from '../../../../utils/UtilDate'
 
 interface Store {
   data: History;
@@ -19,65 +19,63 @@ interface History {
   [index: string]: { value: number; date: string; group: string }[];
 }
 
-const prepareData = (data: ApiDisksHistoryData[]): History => {
-  const temp: History = {};
-  data.map((v) => {
-    const date = UtilDate.ConvertUtcToHMS(v.Time);
+export const prepareData = (data: ApiDisksHistoryData[]): History => {
+  const temp: History = {}
+  data.map(v => {
+    const date = UtilDate.ConvertUtcToHMS(v.Time)
 
-    Object.values(v.Avg).map((d) => {
+    Object.values(v.Avg).map(d => {
       if (temp[d.name] === undefined) {
-        temp[d.name] = [];
+        temp[d.name] = []
       }
 
       temp[d.name].push(
         {
           value: -d.readbytes,
-          date: date,
-          group: "readbytes",
+          date,
+          group: 'readbytes'
         },
         {
           value: d.writebytes,
-          date: date,
-          group: "writebytes",
-        },
-      );
-    });
-  });
+          date,
+          group: 'writebytes'
+        }
+      )
+    })
+  })
 
-  return temp;
-};
+  return temp
+}
 
-const useDisksHistoryStore = create<Store>((setState, getState) => ({
+export const useDisksHistoryStore = create<Store>((setState, getState) => ({
   data: {},
   disks: [],
-  selected: "",
+  selected: '',
   interfaces: [],
   loaded: false,
   setSelected: (v: string) => {
-    setState({ selected: v });
+    setState({ selected: v })
   },
   fetch: async () => {
-    const response = await ApiDisks.GetHistory();
+    const response = await Api.disks.getHistory()
 
-    const history = prepareData(response.data);
+    const history = prepareData(response)
 
-    setState({ data: history });
-    setState({ disks: Object.keys(history).sort() });
-    setState({ selected: Object.keys(history).sort()[0] });
-    setState({ loaded: true });
+    setState({ data: history })
+    setState({ disks: Object.keys(history).sort() })
+    setState({ selected: Object.keys(history).sort()[0] })
+    setState({ loaded: true })
   },
 
   tick: async () => {
-    const response = await ApiDisks.GetTick();
-    const data = getState().data;
-    const prep = prepareData([response.data]);
+    const response = await Api.disks.getTick()
+    const data = getState().data
+    const prep = prepareData([response])
 
-    Object.keys(data).map((k) => {
-      data[k].push(...prep[k]);
-    });
+    Object.keys(data).map(k => {
+      data[k].push(...prep[k])
+    })
 
-    setState({ data: data });
-  },
-}));
-
-export default useDisksHistoryStore;
+    setState({ data })
+  }
+}))
