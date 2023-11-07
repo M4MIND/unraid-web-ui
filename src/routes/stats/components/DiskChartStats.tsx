@@ -2,7 +2,7 @@ import { Card, Select } from 'antd'
 import { Area } from '@ant-design/plots'
 import { useEffect } from 'react'
 import bytes from 'bytes'
-import {useDisksHistoryStore} from '../../../store/system/info/disks/DisksHistoryStore'
+import {useDisksHistoryStore} from '../../../store/disks/DisksHistoryStore'
 
 export const DiskChartStats = () => {
   const [diskList, loaded, selected, history, setSelected] =
