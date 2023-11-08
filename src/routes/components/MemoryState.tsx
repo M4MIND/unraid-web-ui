@@ -22,7 +22,7 @@ export const MemoryState = () => {
           title={'Real free'}
           percent={(realfree / memtotal) * 100}
         />
-          <Progress key={'free-memory'} title={'Free'} percent={(memfree / memtotal) * 100} />
+        <Progress key={'free-memory'} title={'Free'} percent={(memfree / memtotal) * 100} />
         <Progress
           key={'cached-memory'}
           percent={(cached / memtotal) * 100}

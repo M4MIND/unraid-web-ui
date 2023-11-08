@@ -20,7 +20,6 @@ import { Api } from '../api/api'
 import { useCpuStore } from '../store/cpu/CpuStore'
 import { useMemoryStore } from '../store/memory/MemoryStore'
 import { useDockerContainersStore } from '../store/docker/DockerContainers'
-import MemoryIcon from '@mui/icons-material/Memory'
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage()

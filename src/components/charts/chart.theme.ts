@@ -4,6 +4,7 @@ const dark = {
   semanticRed: '#F4664A',
   semanticGreen: '#30BF78',
   padding: 'auto',
+  // eslint-disable-next-line max-len
   fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
   columnWidthRatio: 0.5,
   maxColumnWidth: null,
@@ -12,6 +13,7 @@ const dark = {
   multiplePieWidthRatio: 0.7692307692307692,
   sequenceColors: ['#B8E1FF', '#9AC5FF', '#7DAAFF', '#5B8FF9', '#3D76DD', '#085EC0', '#0047A5', '#00318A', '#001D70'],
   shapes: {
+    // eslint-disable-next-line max-len
     point: ['hollow-circle', 'hollow-square', 'hollow-bowtie', 'hollow-diamond', 'hollow-hexagon', 'hollow-triangle', 'hollow-triangle-down', 'circle', 'square', 'bowtie', 'diamond', 'hexagon', 'triangle', 'triangle-down', 'cross', 'tick', 'plus', 'hyphen', 'line'],
     line: ['line', 'dash', 'dot', 'smooth'],
     area: ['area', 'smooth', 'line', 'smooth-line'],
@@ -30,6 +32,7 @@ const dark = {
             fontSize: 12,
             lineHeight: 12,
             textBaseline: 'middle',
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
           }
         },
@@ -42,6 +45,7 @@ const dark = {
             fill: '#737373',
             fontSize: 12,
             lineHeight: 12,
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
           }
         },
@@ -66,6 +70,7 @@ const dark = {
           spacing: 5,
           style: {
             fill: '#A6A6A6',
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
             fontSize: 12,
             lineHeight: 12,
@@ -108,6 +113,7 @@ const dark = {
             fontSize: 12,
             lineHeight: 12,
             textBaseline: 'middle',
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
           }
         },
@@ -143,6 +149,7 @@ const dark = {
           borderRadius: '3px',
           color: '#A6A6A6',
           fontSize: '12px',
+          // eslint-disable-next-line max-len
           fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
           lineHeight: '12px',
           padding: '0 12px 0 12px'
@@ -167,6 +174,7 @@ const dark = {
             lineWidth: 0,
             fontSize: 12,
             textAlign: 'start',
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
             textBaseline: 'bottom'
           }
@@ -181,6 +189,7 @@ const dark = {
           fontSize: 12,
           textBaseline: 'middle',
           textAlign: 'start',
+          // eslint-disable-next-line max-len
           fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
         }, animate: true
       },
@@ -197,6 +206,7 @@ const dark = {
             stroke: null,
             lineWidth: 0,
             fontSize: 12,
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
           }
         },
@@ -214,6 +224,7 @@ const dark = {
             stroke: null,
             lineWidth: 0,
             fontSize: 12,
+            // eslint-disable-next-line max-len
             fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"'
           }
         }, animate: true
@@ -239,6 +250,7 @@ const dark = {
     style: {
       fill: '#A6A6A6',
       fontSize: 12,
+      // eslint-disable-next-line max-len
       fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
       stroke: null,
       lineWidth: 0
@@ -251,6 +263,7 @@ const dark = {
     style: {
       fill: '#000',
       fontSize: 12,
+      // eslint-disable-next-line max-len
       fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
       stroke: null,
       lineWidth: 0
@@ -260,6 +273,7 @@ const dark = {
     style: {
       fill: '#A6A6A6',
       fontSize: 12,
+      // eslint-disable-next-line max-len
       fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial,\n "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",\n    "Noto Color Emoji"',
       stroke: '#000',
       lineWidth: 1
@@ -269,6 +283,7 @@ const dark = {
   styleSheet: {
     brandColor: '#5B8FF9',
     paletteQualitative10: ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#6F5EF9', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3'],
+    // eslint-disable-next-line max-len
     paletteQualitative20: ['#5B8FF9', '#CDDDFD', '#5AD8A6', '#CDF3E4', '#5D7092', '#CED4DE', '#F6BD16', '#FCEBB9', '#6F5EF9', '#D3CEFD', '#6DC8EC', '#D3EEF9', '#945FB9', '#DECFEA', '#FF9845', '#FFE0C7', '#1E9493', '#BBDEDE', '#FF99C3', '#FFE0ED']
   }
 }

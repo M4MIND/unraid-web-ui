@@ -8,7 +8,7 @@ const api = unraidApi.extend({
   prefixUrl: apiRootUrl + basePath
 })
 export const ApiCpu = {
-  getCpuInfo: (): Promise<InfoStat[]> => api.get('info').json(),
-  getHistory: (): Promise<ApiCpuData[]> => api.get('history').json<ApiCpuData[]>(),
-  getTick: () => api.get('history/tick').json<ApiCpuData>()
+  getCpuInfo: (): Promise<CpuInfo[]> => api.get('info').json(),
+  getHistory: (): Promise<ApiCpuHistory[]> => api.get('history').json<ApiCpuHistory[]>(),
+  getTick: () => api.get('history/tick').json<ApiCpuHistory>()
 }
