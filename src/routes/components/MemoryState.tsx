@@ -17,10 +17,22 @@ export const MemoryState = () => {
     const { realfree, cached, buffers, memtotal, memfree } = stats
     content = (
       <>
-        <Progress title={'Real free'} percent={(realfree / memtotal) * 100} />
-        <Progress title={'Free'} percent={(memfree / memtotal) * 100} />
-        <Progress title={'Cached'} percent={(cached / memtotal) * 100} />
-        <Progress title={'Buffer'} percent={(buffers / memtotal) * 100} />
+        <Progress
+          key={'real-free-memory'}
+          title={'Real free'}
+          percent={(realfree / memtotal) * 100}
+        />
+          <Progress key={'free-memory'} title={'Free'} percent={(memfree / memtotal) * 100} />
+        <Progress
+          key={'cached-memory'}
+          percent={(cached / memtotal) * 100}
+          title={'Cached'}
+        />
+        <Progress
+          key={'buffer-memory'}
+          percent={(buffers / memtotal) * 100}
+          title={'Buffer'}
+        />
       </>
     )
   }

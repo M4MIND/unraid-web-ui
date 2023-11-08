@@ -112,7 +112,7 @@ export const DashboardPage = () => {
         <Col xs={24} sm={24} md={8}>
           <Row gutter={[12, 12]}>
             <Col xs={24}>
-              <CpuState></CpuState>
+              <CpuState/>
             </Col>
             <Col xs={24}>
               <MemoryState></MemoryState>

@@ -34,7 +34,7 @@ export const useCpuStatsHistory = create<State>((setState, getState) => ({
   data: [],
   loaded: false,
   fetchAll: async () => {
-    const response = await Api.cpu.history()
+    const response = await Api.cpu.getHistory()
 
     const normalize = response
       .filter(v => v.average !== null)
@@ -46,7 +46,7 @@ export const useCpuStatsHistory = create<State>((setState, getState) => ({
     setState({ data: normalize })
   },
   fetchTick: async () => {
-    const response = await ApiCpu.tick()
+    const response = await ApiCpu.getTick()
     const data = getState().data
 
     data.push(...prepareData(response))
