@@ -9,22 +9,21 @@ import {
   Statistic,
   Table
 } from 'antd'
-import {CpuState} from '../components/CpuState'
-import {MemoryState} from '../components/MemoryState'
-import React, {useEffect} from 'react'
-import {PlayCircleOutlined, StopOutlined} from '@ant-design/icons'
+import { CpuState } from './components/CpuState'
+import { MemoryState } from './components/MemoryState'
+import React, { useEffect } from 'react'
+import { PlayCircleOutlined, StopOutlined } from '@ant-design/icons'
 import CachedIcon from '@mui/icons-material/Cached'
 
 import bytes from 'bytes'
-import {Api} from '../api/api'
-import {useCpuStore} from '../store/cpu/CpuStore'
-import {useMemoryStore} from '../store/memory/MemoryStore'
-import {useDockerContainersStore} from '../store/docker/DockerContainers'
+import { Api } from '../api/api'
+import { useCpuStore } from '../store/cpu/CpuStore'
+import { useMemoryStore } from '../store/memory/MemoryStore'
+import { useDockerContainersStore } from '../store/docker/DockerContainers'
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const cpuState = useCpuStore(state => state.data)
-  const fetchCpu = useCpuStore(state => state.fetch)
 
   const memory = useMemoryStore(state => state.data)
   const fetchMemory = useMemoryStore(state => state.fetch)
@@ -33,12 +32,10 @@ export const DashboardPage = () => {
   const fetchContainers = useDockerContainersStore(state => state.fetch)
 
   useEffect(() => {
-    fetchCpu()
     fetchMemory()
     fetchContainers()
 
     const id = setInterval(() => {
-      fetchCpu()
       fetchMemory()
       fetchContainers()
     }, 1000)
@@ -46,10 +43,11 @@ export const DashboardPage = () => {
     return () => {
       clearInterval(id)
     }
-  }, [fetchContainers, fetchCpu, fetchMemory])
+  }, [fetchContainers, fetchMemory])
 
   const cpuLoad = cpuState?.average['cpu'].total ?? 0
-  const memoryFree = memory && memory.stats ? bytes(memory.stats.realfree * 1024) : 0
+  const memoryFree =
+    memory && memory.stats ? bytes(memory.stats.realfree * 1024) : 0
 
   return (
     <div>
@@ -71,7 +69,7 @@ export const DashboardPage = () => {
             <Statistic
               key={'memory-statistic'}
               value={memoryFree}
-              title={'Memory free'}
+              title={'Memory real free'}
             />
           </Card>
         </Col>
@@ -83,7 +81,7 @@ export const DashboardPage = () => {
         <Col xs={8} sm={6} md={4}>
           <Card size={'small'}>
             <Statistic
-              prefix={<PlayCircleOutlined/>}
+              prefix={<PlayCircleOutlined />}
               title="Running containers"
               value={containers?.filter(v => v.State === 'running').length}
             ></Statistic>
@@ -92,7 +90,7 @@ export const DashboardPage = () => {
         <Col xs={8} sm={6} md={4}>
           <Card size={'small'}>
             <Statistic
-              prefix={<CachedIcon/>}
+              prefix={<CachedIcon />}
               title="Restarting containers"
               value={containers?.filter(v => v.State === 'restarting').length}
             ></Statistic>
@@ -101,7 +99,7 @@ export const DashboardPage = () => {
         <Col xs={8} sm={6} md={4}>
           <Card size={'small'}>
             <Statistic
-              prefix={<StopOutlined/>}
+              prefix={<StopOutlined />}
               title="Stoped containers"
               value={containers?.filter(v => v.State === 'exited').length}
             ></Statistic>
@@ -127,9 +125,9 @@ export const DashboardPage = () => {
                 size={'small'}
                 dataSource={containers ?? []}
                 columns={[
-                  {title: 'Name', dataIndex: 'Names', key: 'Names'},
-                  {title: 'Status', dataIndex: 'Status', key: 'Status'},
-                  {title: 'State', dataIndex: 'State', key: 'State'},
+                  { title: 'Name', dataIndex: 'Names', key: 'Names' },
+                  { title: 'Status', dataIndex: 'Status', key: 'Status' },
+                  { title: 'State', dataIndex: 'State', key: 'State' },
                   {
                     title: 'Actions',
                     render: value => (
@@ -140,14 +138,17 @@ export const DashboardPage = () => {
                             size={'small'}
                             onClick={() => {
                               void messageApi.loading('Starting container...')
-                              Api.docker.updateContainer(value.id)
+                              Api.docker
+                                .updateContainer(value.id)
                                 .then(() => {
                                   messageApi.destroy()
                                   void messageApi.success('Container started')
                                 })
                                 .catch(() => {
                                   messageApi.destroy()
-                                  void messageApi.error('Failed to start container')
+                                  void messageApi.error(
+                                    'Failed to start container'
+                                  )
                                 })
                             }}
                           >

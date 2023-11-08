@@ -38,11 +38,6 @@ export const AppLayout = () => {
           width: '100%'
         }}
       >
-        {/* <Breadcrumb style={{ margin: "24px 0 12px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb> */}
         <Layout style={{padding: '24px 0'}}>
           <Content>
             <Outlet/>

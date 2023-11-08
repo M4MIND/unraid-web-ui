@@ -3,6 +3,7 @@ import { Area } from '@ant-design/plots'
 import { useEffect } from 'react'
 import bytes from 'bytes'
 import {useDisksHistoryStore} from '../../../store/disks/DisksHistoryStore'
+import {ChartThemes} from '../../../components/charts/chart.theme'
 
 export const DiskChartStats = () => {
   const [diskList, loaded, selected, history, setSelected] =
@@ -29,6 +30,7 @@ export const DiskChartStats = () => {
     <Card
       size={'small'}
       title={'Disks Read/Write'}
+      loading={!loaded}
       extra={
         <Select
           loading={!loaded}
@@ -46,11 +48,11 @@ export const DiskChartStats = () => {
     >
       <Area
         seriesField={'group'}
-        loading={!loaded}
         key={selected}
         xField={'date'}
         yField={'value'}
         animation={false}
+        theme={ChartThemes.dark}
         yAxis={{
           label: {
             formatter: v => bytes(Number(v))

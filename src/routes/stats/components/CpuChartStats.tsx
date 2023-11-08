@@ -1,7 +1,8 @@
 import { Card } from 'antd'
 import { useEffect } from 'react'
 import { Area } from '@ant-design/plots'
-import {useCpuStatsHistory} from '../../../store/cpu/CpuStatsHistory'
+import { useCpuStatsHistory } from '../../../store/cpu/CpuStatsHistory'
+import {ChartThemes} from '../../../components/charts/chart.theme'
 
 export const CpuChartStats = () => {
   const [history, loaded] = useCpuStatsHistory(state => [
@@ -22,16 +23,16 @@ export const CpuChartStats = () => {
   }, [])
 
   return (
-    <Card size={'small'} title={'CPU'}>
+    <Card size={'small'} loading={!loaded} title={'CPU'}>
       <Area
         animation={false}
         yField={'value'}
         xField={'date'}
         isStack={false}
-        loading={!loaded}
         yAxis={{ max: 100, min: 0 }}
         seriesField={'group'}
         renderer={'canvas'}
+        theme={ChartThemes.dark}
         data={history}
       ></Area>
     </Card>
