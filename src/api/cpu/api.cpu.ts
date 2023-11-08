@@ -63,7 +63,7 @@ export interface InfoStat {
 }
 
 export const ApiCpu = {
-  cpuInfo: (): Promise<InfoStat> => api.get('info').json<InfoStat>(),
-  history: (): Promise<ApiCpuData[]> => api.get('history').json<ApiCpuData[]>(),
-  tick: () => api.get('history/tick').json<ApiCpuData>()
+  getCpuInfo: (): Promise<InfoStat[]> => api.get('info').json(),
+  getHistory: (): Promise<ApiCpuData[]> => api.get('history').json<ApiCpuData[]>(),
+  getTick: () => api.get('history/tick').json<ApiCpuData>()
 }

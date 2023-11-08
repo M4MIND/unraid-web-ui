@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Col, Row } from 'antd'
-import MemoryChartStats from './components/MemoryChartStats'
+import {MemoryChartStats} from './components/MemoryChartStats'
 import {useMemoryHistoryStore} from '../../store/memory/MemoryHistoryStore'
 import {CpuChartStats} from './components/CpuChartStats'
 import {DiskChartStats} from './components/DiskChartStats'
