@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import {UtilDate} from '../../utils/UtilDate'
-import {Api} from '../../api/api'
+import { UtilDate } from '../../utils/UtilDate'
+import { Api } from '../../api/api'
 
 interface History {
   [index: string]: {
@@ -27,13 +27,17 @@ export const useNetworkHistoryStore = create<Store>((setState, getState) => ({
   fetch: async () => {
     const response = await Api.network.getHistory()
 
+    setState({ loaded: true })
+
     const temp: History = {}
 
     response.map(v => {
       const date = UtilDate.ConvertUtcToHMS(v.Time)
 
-      return Object.keys(v.Avg).map(k => {
-        if (temp[k] === undefined) {temp[k] = []}
+      return Object.keys(v.Avg ?? {}).map(k => {
+        if (temp[k] === undefined) {
+          temp[k] = []
+        }
 
         temp[k].push(
           {
@@ -54,7 +58,6 @@ export const useNetworkHistoryStore = create<Store>((setState, getState) => ({
     if (getState().selected === '')
     {setState({ selected: Object.keys(response[0].Avg)[0] })}
     setState({ data: temp })
-    setState({ loaded: true })
   },
 
   fetchTick: async () => {
@@ -63,7 +66,9 @@ export const useNetworkHistoryStore = create<Store>((setState, getState) => ({
 
     const date = UtilDate.ConvertUtcToHMS(response.Time)
     Object.keys(response.Avg).map(k => {
-      if (temp[k] === undefined) {temp[k] = []}
+      if (temp[k] === undefined) {
+        temp[k] = []
+      }
       temp[k].push(
         {
           date,

@@ -1,11 +1,22 @@
 import { Card, Col, Row } from 'antd'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { DashboardFilled } from '@ant-design/icons'
-import { Progress } from './stats/Progress'
-import {useCpuStore} from '../store/cpu/CpuStore'
+import { Progress } from './Progress'
+import { useCpuStore } from '../../store/cpu/CpuStore'
 
 export const CpuState = () => {
   const cpuState = useCpuStore(state => state.data)
+  const fetchCpu = useCpuStore(state => state.fetch)
+
+  useEffect(() => {
+    fetchCpu()
+
+    const id = setInterval(() => {
+      fetchCpu()
+    }, 1000)
+
+    return () => {clearInterval(id)}
+  }, [fetchCpu])
 
   return (
     <Card

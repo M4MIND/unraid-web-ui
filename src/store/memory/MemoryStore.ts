@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { Api } from '../../api/api'
-import {Stat} from '../../api/memory/memory.api'
+import { Stats } from '../../api/memory/respone/Stats'
 
 interface IUseMemoryStore {
-  data: Stat | null;
+  data: Stats | null;
   fetch: () => void;
 }
 
