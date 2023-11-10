@@ -23,7 +23,7 @@ import {useDockerContainersStore} from '../../store/docker/DockerContainers'
 import {DockerContainers} from './components/DockerContainers'
 import StorageIcon from '@mui/icons-material/Storage'
 import {useDiskUsageStore} from '../../store/disks/DisksUsageStore'
-import {useRaidMdcmdStore} from '../../store/raid/RaidMdcmdStore'
+import {useRaidInfo} from '../../store/raid/RaidInfoStore'
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage()
@@ -37,13 +37,13 @@ export const DashboardPage = () => {
 
   // const [diskUsageFetch, diskUsage, diskUsageIsLoading] = useDiskUsageStore(state => [state.fetch, state.data, state.loading])
 
-  const [raidMdcmdFetch, raidMdcmdData, raidMdcmdIsLoading] = useRaidMdcmdStore(state => [state.fetch, state.data, state.loading])
+  const [raidInfoFetch, raidInfoData, raidInfoIsLoading] = useRaidInfo(state => [state.fetch, state.data, state.loading])
 
   useEffect(() => {
     fetchMemory()
     fetchContainers()
     // diskUsageFetch()
-    raidMdcmdFetch()
+    raidInfoFetch()
 
     const id = setInterval(() => {
       fetchMemory()
@@ -53,7 +53,7 @@ export const DashboardPage = () => {
     return () => {
       clearInterval(id)
     }
-  }, [fetchContainers, fetchMemory, raidMdcmdFetch])
+  }, [fetchContainers, fetchMemory, raidInfoFetch])
 
   const cpuLoad = cpuState?.average['cpu'].total ?? 0
   const memoryFree =
@@ -132,13 +132,18 @@ export const DashboardPage = () => {
           <Row gutter={12}>
             <Col xs={12}><DockerContainers></DockerContainers></Col>
             <Col xs={12}>
-              <Card loading={raidMdcmdIsLoading} extra={<StorageIcon style={{fontSize: '18px', marginTop: '6px'}}/>} size={'small'}
+              <Card loading={raidInfoIsLoading} extra={<StorageIcon style={{fontSize: '18px', marginTop: '6px'}}/>} size={'small'}
                 title={'Array'}>
                 <Table size={'small'} columns={[{
                   title: 'Model',
                   key: 'model',
-                  dataIndex: 'DiskId'
-                }]} dataSource={raidMdcmdData?.Stats ?? []}></Table>
+                  dataIndex: 'model'
+                },
+                {title: 'Size', key: 'size', dataIndex: 'size', render: (v => bytes(v))},
+                {title: 'Used', key: 'used', dataIndex: 'used', render: (v => bytes(v))},
+                {title: 'Name', key: 'name', dataIndex: 'name'},
+                {title: 'UUID', key: 'uuid', dataIndex: 'uuid'}
+                ]} dataSource={raidInfoData}></Table>
               </Card>
             </Col>
           </Row>
