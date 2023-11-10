@@ -1,8 +1,9 @@
 import {Card, Col, Row} from 'antd'
 import React, {useEffect} from 'react'
-import {DashboardFilled} from '@ant-design/icons'
+
 import {Progress} from './Progress'
-import { useCpuStore } from '../../store/cpu/CpuStore'
+import {useCpuStore} from '../../../store/cpu/CpuStore'
+import {DataUsage } from '@mui/icons-material'
 
 export const CpuState = () => {
   const info = useCpuStore(state => state.info)
@@ -18,7 +19,9 @@ export const CpuState = () => {
       fetchCpu()
     }, 1000)
 
-    return () => {clearInterval(id)}
+    return () => {
+      clearInterval(id)
+    }
   }, [fetchCpu])
 
   useEffect(() => {
@@ -30,12 +33,9 @@ export const CpuState = () => {
   return (
     <Card
       size="small"
-      title={(
-        <>
-          <DashboardFilled/>{' '}Cpu
-        </>
-      )}
+      title={'CPU'}
       loading={infoLoading}
+      extra={<DataUsage style={{fontSize: '18px', marginTop: '6px'}} />}
     >
       {cpuInfo && (
         <div style={{marginBottom: 12}}>
@@ -62,10 +62,12 @@ export const CpuState = () => {
               .map(cpuName => {
                 const isTotal = cpuName === 'cpu'
                 const cpuNewName = isTotal ? 'Total' : cpuName.replace('cpu', 'Core ')
+                const percent = 100 - cpuState.average[cpuName].idle
 
                 return (
                   <Col key={cpuNewName} span={isTotal ? 24 : 12}>
-                    <Progress key={`${cpuName}-progress`} percent={100 - cpuState.average[cpuName].idle} title={cpuNewName}/>
+                    <Progress color={percent >= 80 ? 'red' : percent >= 60 ? 'yellow' : undefined} key={`${cpuName}-progress`}
+                      percent={percent} title={cpuNewName}/>
                   </Col>
                 )
               }

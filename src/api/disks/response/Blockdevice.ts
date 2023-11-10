@@ -1,0 +1,69 @@
+import {Children} from './Children'
+
+export interface Blockdevice {
+  alignment: number
+  'disc-aln': number
+  dax: boolean
+  'disc-gran': number
+  'disc-max': number
+  'disc-zero': boolean
+  fsavail?: number
+  fsroots: string | undefined[]
+  fssize?: number
+  fstype?: string
+  fsused?: number
+  'fsuse%'?: string
+  fsver?: string
+  group: string
+  hctl?: string
+  hotplug: boolean
+  kname: string
+  label: any
+  'log-sec': number
+  'maj:min': string
+  'min-io': number
+  mode: string
+  model?: string
+  name: string
+  'opt-io': number
+  owner: string
+  partflags: any
+  partlabel: any
+  parttype: any
+  parttypename: any
+  partuuid: any
+  path: string
+  'phy-sec': number
+  pkname: any
+  pttype?: string
+  ptuuid?: string
+  ra: number
+  rand: boolean
+  rev?: string
+  rm: boolean
+  ro: boolean
+  rota: boolean
+  'rq-size': number
+  sched?: string
+  serial?: string
+  size: number
+  start: any
+  state?: string
+  subsystems: string
+  mountpoint?: string
+  mountpoints: string | undefined[]
+  tran?: string
+  type: string
+  uuid?: string
+  vendor?: string
+  wsame: number
+  wwn?: string
+  zoned: string
+  'zone-sz': number
+  'zone-wgran': number
+  'zone-app': number
+  'zone-nr': number
+  'zone-omax': number
+  'zone-amax': number
+  children?: Children[]
+}

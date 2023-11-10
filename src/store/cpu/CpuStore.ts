@@ -19,7 +19,6 @@ interface CpuActions {
 export const useCpuStore = create<CpuState & CpuActions>()(set => ({
   info: null,
   infoLoading: true,
-
   data: null,
 
   fetchInfo: async () => {
