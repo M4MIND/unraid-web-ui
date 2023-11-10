@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { Api } from '../../api/api'
-import { ApiDisksHistoryData } from '../../api/disks/api.disks'
 import { UtilDate } from '../../utils/UtilDate'
+import {ApiDisksHistoryData} from '../../api/disks/apiDisksHistoryData'
 
 interface Store {
   data: History;

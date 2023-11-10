@@ -9,9 +9,10 @@ import AppsIcon from '@mui/icons-material/Apps'
 import PersonalVideoIcon from '@mui/icons-material/PersonalVideo'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import {AppLayout} from '../components/layout/AppLayout'
-import {DashboardPage} from './DashboardPage'
+import {DashboardPage} from './dashboard/DashboardPage'
 import {StatsPage} from './stats/StatsPage'
 import {DockerPage} from './docker/DockerPage'
+import {MainPage} from './main/MainPage'
 
 interface AppRoute {
   label: string;
@@ -31,6 +32,7 @@ export const appRoutes: AppRoute[] = [
   }, {
     label: 'Main',
     path: '/main',
+    component: <MainPage/>,
     icon: <StorageIcon/>
   }, {
     label: 'Shares',

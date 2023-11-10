@@ -3,7 +3,7 @@ import React from 'react'
 import { LineChartOutlined } from '@ant-design/icons'
 
 import { Progress } from './Progress'
-import { useMemoryStore } from '../../store/memory/MemoryStore'
+import { useMemoryStore } from '../../../store/memory/MemoryStore'
 
 export const MemoryState = () => {
   const memoryStore = useMemoryStore(state => state.data)
