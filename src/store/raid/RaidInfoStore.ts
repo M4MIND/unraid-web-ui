@@ -12,6 +12,7 @@ interface StoreData {
   name: string
   used: number
   uuid: string
+  mount: string
 }
 
 export const useRaidInfo = create<Store>((setState, getState, store) => ({
@@ -30,7 +31,8 @@ export const useRaidInfo = create<Store>((setState, getState, store) => ({
           size: findModelInfo.size,
           name: findModelInfo.name,
           used: findMdInfo.fsused ?? 0,
-          uuid: findModelInfo.ptuuid ??  findMdInfo.ptuuid ?? 'Unknown'
+          uuid: findModelInfo.ptuuid ??  findMdInfo.ptuuid ?? 'Unknown',
+          mount: findMdInfo.mountpoint ?? 'Unknown'
         }
 
         console.dir(prepare)

@@ -142,7 +142,7 @@ export const DashboardPage = () => {
                 {title: 'Size', key: 'size', dataIndex: 'size', render: (v => bytes(v))},
                 {title: 'Used', key: 'used', dataIndex: 'used', render: (v => bytes(v))},
                 {title: 'Name', key: 'name', dataIndex: 'name'},
-                {title: 'UUID', key: 'uuid', dataIndex: 'uuid'}
+                {title: 'Path', key: 'mount', dataIndex: 'mount'}
                 ]} dataSource={raidInfoData}></Table>
               </Card>
             </Col>
