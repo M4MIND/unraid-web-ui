@@ -3,7 +3,7 @@ import {
   Card,
   Col,
   Divider,
-  message,
+  message, Progress,
   Row,
   Space,
   Statistic,
@@ -37,7 +37,7 @@ export const DashboardPage = () => {
 
   // const [diskUsageFetch, diskUsage, diskUsageIsLoading] = useDiskUsageStore(state => [state.fetch, state.data, state.loading])
 
-  const [raidInfoFetch, raidInfoData, raidInfoIsLoading] = useRaidInfo(state => [state.fetch, state.data, state.loading])
+  const [raidInfoFetch, raidInfoData, raidInfoIsLoading, raidArraySize, raidArrayUsed] = useRaidInfo(state => [state.fetch, state.data, state.loading, state.arraySize, state.arrayUsed])
 
   useEffect(() => {
     fetchMemory()
@@ -63,6 +63,28 @@ export const DashboardPage = () => {
     <div>
       {contextHolder}
       <Row gutter={[12, 12]}>
+        <Col xs={8} sm={6} md={4} key="cpu-col">
+          <Card size={'small'}>
+            <Statistic
+              loading={raidInfoIsLoading}
+              key={'array-size'}
+              precision={0}
+              value={bytes(raidArraySize)}
+              title={'Array size'}
+            />
+          </Card>
+        </Col>
+        <Col xs={8} sm={6} md={4} key="cpu-col">
+          <Card size={'small'}>
+            <Statistic
+              loading={raidInfoIsLoading}
+              key={'array-size'}
+              precision={0}
+              value={bytes(raidArrayUsed)}
+              title={'Array used'}
+            />
+          </Card>
+        </Col>
         <Col xs={8} sm={6} md={4} key="cpu-col">
           <Card size={'small'}>
             <Statistic
@@ -142,7 +164,8 @@ export const DashboardPage = () => {
                 {title: 'Size', key: 'size', dataIndex: 'size', render: (v => bytes(v))},
                 {title: 'Used', key: 'used', dataIndex: 'used', render: (v => bytes(v))},
                 {title: 'Name', key: 'name', dataIndex: 'name'},
-                {title: 'Path', key: 'mount', dataIndex: 'mount'}
+                {title: 'Path', key: 'mount', dataIndex: 'mount'},
+                {title: 'Utilization', key: 'utilization', dataIndex: 'utilization', render: v => <Progress showInfo={false} percent={v}></Progress>}
                 ]} dataSource={raidInfoData}></Table>
               </Card>
             </Col>

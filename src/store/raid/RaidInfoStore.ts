@@ -4,6 +4,8 @@ import {Api} from '../../api/api'
 
 interface Store extends BaseApiStore {
   data: StoreData[]
+  arraySize: number,
+  arrayUsed: number,
 }
 
 interface StoreData {
@@ -13,13 +15,18 @@ interface StoreData {
   used: number
   uuid: string
   mount: string
+  utilization: number
 }
 
 export const useRaidInfo = create<Store>((setState, getState, store) => ({
   data: [],
   loading: true,
+  arraySize: 0,
+  arrayUsed: 0,
   fetch: async () => {
     const [mdcmd, lsblk ] = await Promise.all([Api.raid.getMdcmdStat(), Api.disks.getLsblk()])
+    let arraySize = 0
+    let arrayUsed = 0
 
     const p: StoreData[] = mdcmd.Stats.map(v => {
       const findModelInfo = lsblk.blockdevices.find(k => k.kname === v.RdevName)
@@ -32,10 +39,12 @@ export const useRaidInfo = create<Store>((setState, getState, store) => ({
           name: findModelInfo.name,
           used: findMdInfo.fsused ?? 0,
           uuid: findModelInfo.ptuuid ??  findMdInfo.ptuuid ?? 'Unknown',
-          mount: findMdInfo.mountpoint ?? 'Unknown'
+          mount: findMdInfo.mountpoint ?? 'Unknown',
+          utilization: Number((((findMdInfo.fsused ?? 1) / findModelInfo.size) * 100).toFixed(2))
         }
 
-        console.dir(prepare)
+        arraySize += prepare.size
+        arrayUsed += prepare.used
 
         return prepare
       }
@@ -43,5 +52,7 @@ export const useRaidInfo = create<Store>((setState, getState, store) => ({
 
     setState({data: p})
     setState({loading: false})
+    setState({arraySize})
+    setState({arrayUsed})
   }
 }))
