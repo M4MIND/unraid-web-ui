@@ -1,16 +1,20 @@
-import { create } from 'zustand'
-import { Api } from '../../api/api'
-import {DockerContainer} from '../../api/docker/response/Container'
+import { create } from "zustand";
+import { Api } from "../../api/api";
+import { DockerContainer } from "../../api/docker/response/Container";
+import { BaseApiStore } from "../BaseApiStore";
 
-interface DockerContainersStore {
+interface DockerContainersStore extends BaseApiStore {
   data: DockerContainer[];
-  fetch: () => void;
 }
 
-export const useDockerContainersStore = create<DockerContainersStore>(set => ({
-  data: [],
-  fetch: async () => {
-    const data = await Api.docker.getContainers()
-    set({data})
-  }
-}))
+export const useDockerContainersStore = create<DockerContainersStore>(
+  (set) => ({
+    data: [],
+    loading: true,
+    fetch: async () => {
+      const data = await Api.docker.getContainers();
+      set({ data });
+      set({ loading: false });
+    },
+  }),
+);

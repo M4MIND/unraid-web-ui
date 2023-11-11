@@ -1,25 +1,46 @@
-import {Card, Table} from 'antd'
-import React from 'react'
-import {useDockerContainersStore} from '../../../store/docker/DockerContainers'
+import { Card, Col, Dropdown, Row, Tag, Typography } from "antd";
+import React from "react";
+import { useDockerContainersStore } from "../../../store/docker/DockerContainers";
 
 export const DockerContainers = () => {
-  const containers = useDockerContainersStore(state => state.data)
+  const [containers, loading] = useDockerContainersStore((state) => [
+    state.data,
+    state.loading,
+  ]);
+
+  const regexp = new RegExp("^/", "gm");
+
+  const stateType: { [index: string]: string } = {
+    running: "green",
+    restarting: "blue",
+    exited: "yellow",
+    default: "asd",
+  };
 
   return (
-    <Card size={'small'} title={'Docker containers'}>
-      {containers ? (
-        <Table
-          size={'small'}
-          dataSource={containers ?? []}
-          columns={[
-            { title: 'Name', dataIndex: 'Names', key: 'Names' },
-            { title: 'Status', dataIndex: 'Status', key: 'Status' },
-            { title: 'State', dataIndex: 'State', key: 'State' }
-          ]}
-        ></Table>
-      ) : (
-        'Loading'
-      )}
-    </Card>
-  )
-}
+    <Row gutter={[12, 12]}>
+      {containers.map((v) => {
+        return (
+          <Col xs={12}>
+            <Card
+              size={"small"}
+              extra={
+                <Tag
+                  color={stateType[v.State] ?? stateType["default"]}
+                  style={{ margin: 0 }}
+                >
+                  {v.State}
+                </Tag>
+              }
+              title={v.Names[0].replace(regexp, "")}
+            >
+              <Typography.Paragraph style={{ margin: 0 }}>
+                {v.Status}
+              </Typography.Paragraph>
+            </Card>
+          </Col>
+        );
+      })}
+    </Row>
+  );
+};
