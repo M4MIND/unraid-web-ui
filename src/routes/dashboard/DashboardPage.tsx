@@ -23,14 +23,13 @@ import {
 import CachedIcon from "@mui/icons-material/Cached";
 
 import bytes from "bytes";
-import { Api } from "../../api/api";
 import { useCpuStore } from "../../store/cpu/CpuStore";
 import { useMemoryStore } from "../../store/memory/MemoryStore";
 import { useDockerContainersStore } from "../../store/docker/DockerContainers";
 import { DockerContainers } from "./components/DockerContainers";
-import { useRaidInfo } from "../../store/raid/RaidInfoStore";
-import SdStorageOutlinedIcon from "@mui/icons-material/SdStorageOutlined";
-import AlbumOutlinedIcon from "@mui/icons-material/AlbumOutlined";
+import { useDisksArrayStore } from "../../store/disks/DisksArrayStore";
+
+import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -42,35 +41,28 @@ export const DashboardPage = () => {
   const containers = useDockerContainersStore((state) => state.data);
   const fetchContainers = useDockerContainersStore((state) => state.fetch);
 
-  const [
-    raidInfoFetch,
-    raidInfoData,
-    raidInfoIsLoading,
-    raidArraySize,
-    raidArrayUsed,
-  ] = useRaidInfo((state) => [
-    state.fetch,
-    state.data,
-    state.loading,
-    state.arraySize,
-    state.arrayUsed,
-  ]);
+  const [arrayInfoFetch, arrayInfoData, arrayInfoIsLoading] =
+    useDisksArrayStore((state) => [state.fetch, state.data, state.loading]);
 
   useEffect(() => {
     fetchMemory();
     fetchContainers();
-    // diskUsageFetch()
-    raidInfoFetch();
+    arrayInfoFetch();
 
     const id = setInterval(() => {
       fetchMemory();
       fetchContainers();
     }, 1000);
 
+    const array = setInterval(() => {
+      arrayInfoFetch();
+    }, 10000);
+
     return () => {
       clearInterval(id);
+      clearInterval(array);
     };
-  }, [fetchContainers, fetchMemory, raidInfoFetch]);
+  }, [fetchContainers, fetchMemory, arrayInfoFetch]);
 
   const cpuLoad = cpuState?.average["cpu"].total ?? 0;
   const memoryFree =
@@ -134,10 +126,10 @@ export const DashboardPage = () => {
             <Col xs={8} sm={6} md={8} key="array-size">
               <Card size={"small"}>
                 <Statistic
-                  loading={raidInfoIsLoading}
+                  loading={arrayInfoIsLoading}
                   key={"array-size"}
                   precision={0}
-                  value={bytes(raidArraySize)}
+                  value={bytes(arrayInfoData?.Size ?? 0)}
                   title={"Array size"}
                 />
               </Card>
@@ -145,10 +137,10 @@ export const DashboardPage = () => {
             <Col xs={8} sm={6} md={8} key="array-free">
               <Card size={"small"}>
                 <Statistic
-                  loading={raidInfoIsLoading}
+                  loading={arrayInfoIsLoading}
                   key={"array-free"}
                   precision={0}
-                  value={bytes(raidArraySize - raidArrayUsed)}
+                  value={bytes(arrayInfoData?.Free ?? 0)}
                   title={"Array Free"}
                 />
               </Card>
@@ -156,42 +148,54 @@ export const DashboardPage = () => {
             <Col xs={8} sm={6} md={8} key="array-used">
               <Card size={"small"}>
                 <Statistic
-                  loading={raidInfoIsLoading}
+                  loading={arrayInfoIsLoading}
                   key={"array-used"}
                   precision={0}
-                  value={bytes(raidArrayUsed)}
+                  value={bytes(arrayInfoData?.Used ?? 0)}
                   title={"Array used"}
                 />
               </Card>
             </Col>
             <Col xs={24}>
               <Row gutter={[12, 12]}>
-                {raidInfoData.map((v) => {
+                {(arrayInfoData?.Devices ?? []).map((v) => {
                   return (
-                    <Col xs={24}>
+                    <Col xs={24} key={v.RdevName}>
                       <Card
-                        extra={isHdd[Number(v.isHdd)]}
                         size={"small"}
-                        title={v.model}
+                        title={`${v.DiskId} (${v.RdevName})`}
+                        extra={isHdd[Number(v.IsHdd)]}
                       >
+                        <Row gutter={[12, 0]}>
+                          <Col flex={"1 1"}>
+                            <Progress
+                              percent={v.DiskUsedPercent}
+                              showInfo={false}
+                            ></Progress>
+                          </Col>
+                          <Col flex={"0 1"}>
+                            {v.DiskUsedPercent.toFixed(1)}%
+                          </Col>
+                        </Row>
                         <Row>
-                          <Col xs={6}>
+                          <Col xs={8}>
                             <Statistic
                               title={"Size"}
-                              value={bytes(v.size)}
+                              value={bytes(v.DiskSizeBytes)}
                             ></Statistic>
                           </Col>
-                          <Col xs={6}>
+                          <Col xs={8}>
                             <Statistic
                               title={"Used"}
-                              value={bytes(v.used)}
+                              value={bytes(v.DiskUsedBytes)}
                             ></Statistic>
                           </Col>
-                          <Col xs={6}>
+                          <Col xs={8}>
                             <Statistic
-                              value={v.utilization}
-                              title={"Utilization"}
-                              suffix={"%"}
+                              prefix={<DeviceThermostatIcon />}
+                              suffix={"℃"}
+                              title={"Temperature"}
+                              value={v.Temperature}
                             ></Statistic>
                           </Col>
                         </Row>
