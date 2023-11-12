@@ -9,11 +9,17 @@ import {
   Space,
   Statistic,
   Table,
+  Tag,
+  Typography,
 } from "antd";
 import { CpuState } from "./components/CpuState";
 import { MemoryState } from "./components/MemoryState";
-import React, { useEffect } from "react";
-import { PlayCircleOutlined, StopOutlined } from "@ant-design/icons";
+import React, { JSX, useEffect } from "react";
+import {
+  HddOutlined,
+  PlayCircleOutlined,
+  StopOutlined,
+} from "@ant-design/icons";
 import CachedIcon from "@mui/icons-material/Cached";
 
 import bytes from "bytes";
@@ -22,8 +28,9 @@ import { useCpuStore } from "../../store/cpu/CpuStore";
 import { useMemoryStore } from "../../store/memory/MemoryStore";
 import { useDockerContainersStore } from "../../store/docker/DockerContainers";
 import { DockerContainers } from "./components/DockerContainers";
-import StorageIcon from "@mui/icons-material/Storage";
 import { useRaidInfo } from "../../store/raid/RaidInfoStore";
+import SdStorageOutlinedIcon from "@mui/icons-material/SdStorageOutlined";
+import AlbumOutlinedIcon from "@mui/icons-material/AlbumOutlined";
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -68,6 +75,19 @@ export const DashboardPage = () => {
   const cpuLoad = cpuState?.average["cpu"].total ?? 0;
   const memoryFree =
     memory && memory.stats ? bytes(memory.stats.realfree * 1024) : 0;
+
+  const isHdd: { [index: number]: JSX.Element } = {
+    1: (
+      <Tag color={"green"} style={{ margin: 0 }}>
+        HDD
+      </Tag>
+    ),
+    0: (
+      <Tag color={"blue"} style={{ margin: 0 }}>
+        SSD
+      </Tag>
+    ),
+  };
 
   return (
     <div>
@@ -145,47 +165,41 @@ export const DashboardPage = () => {
               </Card>
             </Col>
             <Col xs={24}>
-              <Card
-                loading={raidInfoIsLoading}
-                extra={
-                  <StorageIcon style={{ fontSize: "18px", marginTop: "6px" }} />
-                }
-                size={"small"}
-                title={"Array"}
-              >
-                <Table
-                  size={"small"}
-                  columns={[
-                    {
-                      title: "Model",
-                      key: "model",
-                      dataIndex: "model",
-                    },
-                    {
-                      title: "Size",
-                      key: "size",
-                      dataIndex: "size",
-                      render: (v) => bytes(v),
-                    },
-                    {
-                      title: "Used",
-                      key: "used",
-                      dataIndex: "used",
-                      render: (v) => bytes(v),
-                    },
-                    { title: "Path", key: "mount", dataIndex: "mount" },
-                    {
-                      title: "Utilization",
-                      key: "utilization",
-                      dataIndex: "utilization",
-                      render: (v) => (
-                        <Progress showInfo={false} percent={v}></Progress>
-                      ),
-                    },
-                  ]}
-                  dataSource={raidInfoData}
-                ></Table>
-              </Card>
+              <Row gutter={[12, 12]}>
+                {raidInfoData.map((v) => {
+                  return (
+                    <Col xs={24}>
+                      <Card
+                        extra={isHdd[Number(v.isHdd)]}
+                        size={"small"}
+                        title={v.model}
+                      >
+                        <Row>
+                          <Col xs={6}>
+                            <Statistic
+                              title={"Size"}
+                              value={bytes(v.size)}
+                            ></Statistic>
+                          </Col>
+                          <Col xs={6}>
+                            <Statistic
+                              title={"Used"}
+                              value={bytes(v.used)}
+                            ></Statistic>
+                          </Col>
+                          <Col xs={6}>
+                            <Statistic
+                              value={v.utilization}
+                              title={"Utilization"}
+                              suffix={"%"}
+                            ></Statistic>
+                          </Col>
+                        </Row>
+                      </Card>
+                    </Col>
+                  );
+                })}
+              </Row>
             </Col>
           </Row>
         </Col>
