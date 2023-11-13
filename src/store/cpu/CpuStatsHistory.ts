@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import { ApiCpu, ApiCpuData } from '../../api/cpu/api.cpu'
+import { ApiCpu } from '../../api/cpu/api.cpu'
 import {Api} from '../../api/api'
 import {UtilDate} from '../../utils/UtilDate'
+import { ApiCpuHistory } from '../../api/cpu/response/CpuHistory'
 
 const filter = ['idle', 'steal', 'nice', 'irq', 'softirq', 'guestnice']
 
@@ -18,7 +19,7 @@ interface State {
   fetchTick: () => void;
 }
 
-const prepareData = (data: ApiCpuData): PreparedData[] => {
+const prepareData = (data: ApiCpuHistory): PreparedData[] => {
   const date = UtilDate.ConvertUtcToHMS(data.time)
 
   return Object.keys(data.average['cpu'])

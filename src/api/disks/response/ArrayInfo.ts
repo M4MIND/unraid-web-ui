@@ -1,4 +1,4 @@
-import { Device } from "./Device";
+import { Device } from './Device'
 
 export interface ArrayInfo {
   Size: number;
