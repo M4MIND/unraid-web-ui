@@ -42,4 +42,4 @@ export const useCpuStore = create<CpuState & CpuActions>()(set => ({
   }
 }))
 
-DashboardUpdater.subscribe('cpu-data', data => useCpuStore.setState({data: data.value as unknown as ApiCpuHistory}))
+DashboardUpdater.subscribe('cpu-data', data => useCpuStore.setState({data: data as unknown as ApiCpuHistory}))

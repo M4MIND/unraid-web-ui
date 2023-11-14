@@ -3,13 +3,12 @@ import { message } from 'antd'
 type WebsocketEventType = 'ping-pong' | 'cpu-data'
 
 interface ServerEvent {
-  subscriptionType: WebsocketEventType
-  timestamp: number
-  value: string
+  topic: WebsocketEventType
+  data: never
 }
 
 const websocketUrl = import.meta.env.VITE_APP_WEBSOCKET_API ?? ''
-const websocketPathUrl = `${websocketUrl}/websocket`
+const websocketPathUrl = websocketUrl
 let socket = new WebSocket(websocketPathUrl)
 const subscribers: Map<string, (data: ServerEvent) => void> = new Map()
 let isConnected = false
@@ -25,13 +24,13 @@ const sendSubscribe = (eventType: WebsocketEventType) => {
   socket.onmessage = e => {
     const data = JSON.parse(e.data) as ServerEvent
 
-    const subscriberFunc = subscribers.get(data.subscriptionType)
+    const subscriberFunc = subscribers.get(data.topic)
 
     if (!subscriberFunc) {
       return
     }
 
-    subscriberFunc(data)
+    subscriberFunc(data.data)
   }
 
   socket.send(request)
@@ -51,7 +50,7 @@ const onOpen = () => {
   isConnected = true
   message.open({
     type: 'success',
-    content: 'Connected'
+    content: 'Connected to websocket 🎉'
   })
   Array.from(subscribers.entries()).forEach(([key]) => {
     sendSubscribe(key as WebsocketEventType)
