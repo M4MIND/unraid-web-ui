@@ -4,6 +4,7 @@ import {message} from 'antd'
 import { DashboardUpdater } from '../../service/updater/DasboardUpdater'
 import { ApiCpuHistory } from '../../api/cpu/response/CpuHistory'
 import { CpuInfo } from '../../api/cpu/response/CpuInfo'
+import {WebsocketTopics} from '../../websocket/WebsocketTopics'
 
 interface CpuState {
   info: CpuInfo[] | null;
@@ -42,4 +43,4 @@ export const useCpuStore = create<CpuState & CpuActions>()(set => ({
   }
 }))
 
-DashboardUpdater.subscribe('cpu-data', data => useCpuStore.setState({data: data as unknown as ApiCpuHistory}))
+WebsocketTopics.subscribe<ApiCpuHistory>('cpu-data', data => useCpuStore.setState({data}))

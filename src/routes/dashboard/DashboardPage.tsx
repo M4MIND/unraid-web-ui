@@ -24,39 +24,18 @@ import { DockerContainers } from './components/DockerContainers'
 import { useDisksArrayStore } from '../../store/disks/DisksArrayStore'
 
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat'
+import {WebsocketTopics} from '../../websocket/WebsocketTopics'
 
 export const DashboardPage = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const cpuState = useCpuStore(state => state.data)
 
   const memory = useMemoryStore(state => state.data)
-  const fetchMemory = useMemoryStore(state => state.fetch)
 
   const containers = useDockerContainersStore(state => state.data)
-  const fetchContainers = useDockerContainersStore(state => state.fetch)
 
-  const [arrayInfoFetch, arrayInfoData, arrayInfoIsLoading] =
-    useDisksArrayStore(state => [state.fetch, state.data, state.loading])
-
-  useEffect(() => {
-    fetchMemory()
-    fetchContainers()
-    arrayInfoFetch()
-
-    // const id = setInterval(() => {
-    //   fetchMemory()
-    //   fetchContainers()
-    // }, 1000)
-
-    // const array = setInterval(() => {
-    //   arrayInfoFetch()
-    // }, 10000)
-
-    // return () => {
-    //   clearInterval(id)
-    //   clearInterval(array)
-    // }
-  }, [fetchContainers, fetchMemory, arrayInfoFetch])
+  const [arrayInfoData, arrayInfoIsLoading] =
+    useDisksArrayStore(state => [state.data, state.loading])
 
   const cpuLoad = cpuState?.average['cpu'].total ?? 0
   const memoryFree =
@@ -162,7 +141,9 @@ export const DashboardPage = () => {
                       <Row gutter={[12, 0]}>
                         <Col flex={'1 1'}>
                           <Progress
+                            size={'small'}
                             percent={v.DiskUsedPercent}
+                            strokeColor={v.DiskUsedPercent > 60 ? 'yellow' : v.DiskUsedPercent > 75 ? 'red' : undefined}
                             showInfo={false}
                           ></Progress>
                         </Col>
