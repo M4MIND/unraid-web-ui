@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { Api } from '../../api/api'
 import { Stats } from '../../api/memory/respone/Stats'
+import {WebsocketTopics} from '../../websocket/WebsocketTopics'
 
 interface IUseMemoryStore {
   data: Stats | null;
@@ -14,3 +15,7 @@ export const useMemoryStore = create<IUseMemoryStore>(set => ({
     set({ data: response })
   }
 }))
+
+WebsocketTopics.subscribe<Stats>('memory-info-tick', message => {
+  useMemoryStore.getState().data = message
+})

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { Api } from '../../api/api'
 import { UtilDate } from '../../utils/UtilDate'
-import {ApiDisksHistoryData} from '../../api/disks/apiDisksHistoryData'
+import { DisksHistory } from '../../api/disks/response/DisksHistory'
 
 interface Store {
   data: History;
@@ -17,7 +17,7 @@ interface History {
   [index: string]: { value: number; date: string; group: string }[];
 }
 
-export const prepareData = (data: ApiDisksHistoryData[]): History => {
+export const prepareData = (data: DisksHistory[]): History => {
   const temp: History = {}
   data.map(v => {
     const date = UtilDate.ConvertUtcToHMS(v.Time)

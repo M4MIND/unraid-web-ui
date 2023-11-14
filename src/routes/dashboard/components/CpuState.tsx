@@ -10,19 +10,6 @@ export const CpuState = () => {
   const infoLoading = useCpuStore(state => state.infoLoading)
   const fetchInfo = useCpuStore(state => state.fetchInfo)
   const cpuState = useCpuStore(state => state.data)
-  const fetchCpu = useCpuStore(state => state.fetch)
-
-  useEffect(() => {
-    fetchCpu()
-
-    const id = setInterval(() => {
-      fetchCpu()
-    }, 1000)
-
-    return () => {
-      clearInterval(id)
-    }
-  }, [fetchCpu])
 
   useEffect(() => {
     fetchInfo()

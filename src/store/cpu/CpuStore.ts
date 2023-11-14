@@ -1,13 +1,16 @@
 import {create} from 'zustand'
-import {ApiCpuData, InfoStat} from '../../api/cpu/api.cpu'
 import {Api} from '../../api/api'
 import {message} from 'antd'
+import { DashboardUpdater } from '../../service/updater/DasboardUpdater'
+import { ApiCpuHistory } from '../../api/cpu/response/CpuHistory'
+import { CpuInfo } from '../../api/cpu/response/CpuInfo'
+import {WebsocketTopics} from '../../websocket/WebsocketTopics'
 
 interface CpuState {
-  info: InfoStat[] | null;
+  info: CpuInfo[] | null;
   infoLoading: boolean;
 
-  data: ApiCpuData | null;
+  data: ApiCpuHistory | null;
 }
 
 interface CpuActions {
@@ -39,3 +42,5 @@ export const useCpuStore = create<CpuState & CpuActions>()(set => ({
     set({data: response})
   }
 }))
+
+WebsocketTopics.subscribe<ApiCpuHistory>('cpu-data', data => useCpuStore.setState({data}))
