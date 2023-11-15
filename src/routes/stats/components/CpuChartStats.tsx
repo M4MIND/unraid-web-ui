@@ -5,25 +5,21 @@ import { useCpuStatsHistory } from '../../../store/cpu/CpuStatsHistory'
 import {ChartThemes} from '../../../components/charts/chart.theme'
 
 export const CpuChartStats = () => {
-  const [history, loaded] = useCpuStatsHistory(state => [
+  const [history, loading] = useCpuStatsHistory(state => [
     state.data,
-    state.loaded
+    state.loading
   ])
 
   useEffect(() => {
-    useCpuStatsHistory.getState().fetchAll()
-
-    const id = setInterval(() => {
-      useCpuStatsHistory.getState().fetchTick()
-    }, 1000)
+    useCpuStatsHistory.getState().subscribe()
 
     return () => {
-      clearInterval(id)
+      useCpuStatsHistory.getState().unsubscribe()
     }
   }, [])
 
   return (
-    <Card size={'small'} loading={!loaded} title={'CPU'}>
+    <Card size={'small'} loading={loading} title={'CPU'}>
       <Area
         animation={false}
         yField={'value'}

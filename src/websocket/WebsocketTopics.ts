@@ -9,10 +9,10 @@ interface Message {
 }
 
 class WebsocketIo {
-  socket: WebSocket
-  subscribers: Map<string, ((message: any) => void)[]> = new Map()
-  queue: Map<string, ((message: any) => void)[]> = new Map()
-  connected = false
+  private socket: WebSocket
+  private subscribers: Map<string, ((message: any) => void)[]> = new Map()
+  private queue: Map<string, ((message: any) => void)[]> = new Map()
+  private connected = false
   constructor() {
     this.socket = new WebSocket(import.meta.env.VITE_APP_WEBSOCKET_API)
 
@@ -45,6 +45,17 @@ class WebsocketIo {
         item(message.data)
       }
     }
+  }
+
+  unsubscribe(topic: string) {
+    const request = JSON.stringify({
+      eventType: 'unsubscribe',
+      subscription: topic
+    })
+
+    this.socket.send(request)
+
+    return this
   }
 
   subscribe<T>(topic: string, callback: (message: T) => void ) {

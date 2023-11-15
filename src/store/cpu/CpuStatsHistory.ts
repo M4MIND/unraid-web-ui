@@ -1,8 +1,8 @@
 import { create } from 'zustand'
-import { ApiCpu } from '../../api/cpu/api.cpu'
-import {Api} from '../../api/api'
 import {UtilDate} from '../../utils/UtilDate'
 import { ApiCpuHistory } from '../../api/cpu/response/CpuHistory'
+import {WebsocketTopics} from '../../websocket/WebsocketTopics'
+import {BaseWebsocketStore} from '../BaseWebsocketStore'
 
 const filter = ['idle', 'steal', 'nice', 'irq', 'softirq', 'guestnice']
 
@@ -12,11 +12,9 @@ interface PreparedData {
   group: string;
 }
 
-interface State {
+interface Store extends BaseWebsocketStore{
   data: PreparedData[];
-  loaded: boolean;
-  fetchAll: () => void;
-  fetchTick: () => void;
+  subscribe: () => void;
 }
 
 const prepareData = (data: ApiCpuHistory): PreparedData[] => {
@@ -31,29 +29,30 @@ const prepareData = (data: ApiCpuHistory): PreparedData[] => {
     }))
 }
 
-export const useCpuStatsHistory = create<State>((setState, getState) => ({
+export const useCpuStatsHistory = create<Store>((setState, getState) => ({
   data: [],
-  loaded: false,
-  fetchAll: async () => {
-    const response = await Api.cpu.getHistory()
+  loading: true,
+  subscribe: () => {
+    WebsocketTopics.subscribe<ApiCpuHistory[]>('stats-cpu-once', m => {
+      const normalize = m
+        .filter(v => v.average !== null)
+        .map(v => prepareData(v))
+        .flat()
 
-    const normalize = response
-      .filter(v => v.average !== null)
-      .map(v => prepareData(v))
-      .flat()
+      setState({ data: normalize })
 
-    setState({ loaded: true })
+      WebsocketTopics.subscribe<ApiCpuHistory>('stats-cpu-tick', m => {
+        const data = getState().data
 
-    setState({ data: normalize })
+        data.push(...prepareData(m))
+
+        setState({ data })
+      })
+    })
+    setState({ loading: false })
   },
-  fetchTick: async () => {
-    const response = await ApiCpu.getTick()
-    const data = getState().data
-
-    data.push(...prepareData(response))
-
-    setState({ loaded: true })
-
-    setState({ data })
+  unsubscribe:() => {
+    WebsocketTopics.unsubscribe('stats-cpu-once').unsubscribe('stats-cpu-tick')
+    setState({data: [], loading: true})
   }
 }))

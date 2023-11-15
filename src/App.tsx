@@ -8,7 +8,11 @@ export const App = () => (
     theme={{
       algorithm: [theme.darkAlgorithm],
       token: {
-        borderRadius: 4
+        fontSize: 14,
+        sizeStep: 4,
+        sizeUnit: 4,
+        borderRadius: 0,
+        colorBgBase: '#060606'
       }
     }}
   >
